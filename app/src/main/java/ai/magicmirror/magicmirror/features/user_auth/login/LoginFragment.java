@@ -1,13 +1,10 @@
 package ai.magicmirror.magicmirror.features.user_auth.login;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.telephony.PhoneNumberUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,20 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseException;
-import com.google.firebase.FirebaseTooManyRequestsException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
-
-import java.util.concurrent.TimeUnit;
 
 import ai.magicmirror.magicmirror.R;
+import ai.magicmirror.magicmirror.features.feeds.FeedActivity;
+import ai.magicmirror.magicmirror.features.profile_setup.ProfileSetupActivity;
 import ai.magicmirror.magicmirror.features.user_auth.dialogs.LoginVerifyPhoneNumberDialogFragment;
 import ai.magicmirror.magicmirror.models.UserDTO;
 
@@ -37,11 +26,12 @@ import ai.magicmirror.magicmirror.models.UserDTO;
  * A simple {@link Fragment} subclass.
  */
 public class LoginFragment extends Fragment implements View.OnClickListener,
-LoginMVP.View{
+LoginMVP.View, LoginVerifyPhoneNumberDialogFragment.LoginVerifyPhoneNumber{
 
     private static final String TAG = "MagicMirror.ai " +
             LoginFragment.class.getSimpleName();
     public static final int FRAGMENT_REQUEST_CODE = 1000;
+    private static final int LOGIN_VERIFY_PASSWORD_REQUEST_CODE = 100;
 
     private Button signInBtn, googleSignInBtn;
     private EditText phoneNumberEdt;
@@ -56,7 +46,6 @@ LoginMVP.View{
     public LoginFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,6 +67,18 @@ LoginMVP.View{
 
         signInBtn.setOnClickListener(this);
         googleSignInBtn.setOnClickListener(this);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            Toast.makeText(getContext(), user.getUid() + " signed in", Toast.LENGTH_SHORT).show();
+            presenter.loginSuccessful(user);
+
+        } else {
+            // No user is signed in
+
+
+        }
 
         return view;
     }
@@ -129,6 +130,7 @@ LoginMVP.View{
         LoginVerifyPhoneNumberDialogFragment dialog
                 = LoginVerifyPhoneNumberDialogFragment.getInstance(phoneNumber);
         dialog.setCancelable(false);
+        dialog.setTargetFragment(this, LOGIN_VERIFY_PASSWORD_REQUEST_CODE);
 
         dialog.show(getActivity().getSupportFragmentManager(), "VERIFY_PHONE");
     }
@@ -142,6 +144,13 @@ LoginMVP.View{
     public void signInSuccess(UserDTO user) {
         errorMessageTV.setText("");
 
+        if(user == null) {
+            startActivity(new Intent(getActivity(), ProfileSetupActivity.class));
+        }else{
+            startActivity(new Intent(getActivity(), FeedActivity.class));
+        }
+
+        getActivity().finish();
 
     }
 
@@ -155,5 +164,10 @@ LoginMVP.View{
     @Override
     public void showNoNetworkError() {
 
+    }
+
+    @Override
+    public void onLoginSuccessful(FirebaseUser user) {
+        presenter.loginSuccessful(user);
     }
 }

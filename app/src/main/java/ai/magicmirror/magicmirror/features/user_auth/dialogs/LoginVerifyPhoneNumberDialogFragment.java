@@ -2,22 +2,17 @@ package ai.magicmirror.magicmirror.features.user_auth.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,19 +23,13 @@ import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import ai.magicmirror.magicmirror.R;
-import ai.magicmirror.magicmirror.features.user_auth.login.LoginFragment;
-
-import static ai.magicmirror.magicmirror.features.user_auth.login.LoginFragment.FRAGMENT_REQUEST_CODE;
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by seven on 3/31/18.
@@ -72,6 +61,8 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
     private String verificationCode;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
 
+    LoginVerifyPhoneNumber callBack;
+
 
     public LoginVerifyPhoneNumberDialogFragment() {
     }
@@ -96,6 +87,15 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
         Bundle bundle = getArguments();
 
         if(null != bundle){
+
+            try {
+                callBack = (LoginVerifyPhoneNumber) getTargetFragment();
+            } catch (ClassCastException e) {
+                throw new ClassCastException("Calling Fragment must implement OnAddFriendListener");
+
+
+            }
+
             phoneNumber = bundle.getString(VERIFY_PHONE_FRAGMENT_PHONE_NUMBER_KEY, "");
             if(phoneNumber.isEmpty())
                 showError = true;
@@ -104,6 +104,10 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
                 auth.useAppLanguage();
 //                sendVerificationCode(phoneNumber);
             }
+        }else{
+            Toast.makeText(getContext(), "Could not verify phone number",
+                    Toast.LENGTH_SHORT).show();
+            dismiss();
         }
 
 //        getDialog().setCanceledOnTouchOutside(false);
@@ -299,12 +303,12 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
             // The SMS verification code has been sent to the provided phone number, we
             // now need to ask the user to enter the code and then construct a credential
             // by combining the code with a verification ID.
-            Log.d(TAG, "onCodeSent:" + verificationId);
+//            Log.d(TAG, "onCodeSent:" + verificationId);
 
+            Toast.makeText(getContext(), "Verification code sent", Toast.LENGTH_SHORT).show();
             // Save verification ID and resending token so we can use them later
             verificationCode = verificationId;
             mResendToken = token;
-
 
             // ...
         }
@@ -313,10 +317,18 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+
+                    final AlertDialog d = (AlertDialog) getDialog();
+
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             //verified successfully
+
+                            FirebaseUser user = task.getResult().getUser();
+                            callBack.onLoginSuccessful(user);
+                            d.dismiss();
+
                         } else {
                             if (task.getException() instanceof
                                     FirebaseAuthInvalidCredentialsException) {
@@ -324,7 +336,6 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
 
                             }
 
-                            final AlertDialog d = (AlertDialog) getDialog();
                             final Button positiveButton =
                                     (Button) d.getButton(Dialog.BUTTON_POSITIVE);
 
@@ -344,6 +355,10 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
                         }
                     }
                 });
+    }
+
+    public interface LoginVerifyPhoneNumber{
+        void onLoginSuccessful(FirebaseUser user);
     }
 
 }

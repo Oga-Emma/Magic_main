@@ -2,6 +2,9 @@ package ai.magicmirror.magicmirror.features.user_auth.login;
 
 
 import android.telephony.PhoneNumberUtils;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseUser;
 
 import ai.magicmirror.magicmirror.models.UserDTO;
 
@@ -28,8 +31,6 @@ public class LoginPresenter implements LoginMVP.Presenter {
         if(PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber)) {
 
             view.authenticatePhoneNumberSignIn(phoneNumber);
-
-
         }else {
             view.signInFailed("Please enter a valid phone number");
         }
@@ -37,12 +38,11 @@ public class LoginPresenter implements LoginMVP.Presenter {
 
     @Override
     public void googleSignIn() {
-        UserDTO userDTO = repository.googleAuth();
-        if (null != userDTO) {
-            //perform necessary signin
-            view.signInSuccess(userDTO);
-        } else {
-            view.signInFailed("Error signing in! please try again");
-        }
+    }
+
+    @Override
+    public void loginSuccessful(FirebaseUser user) {
+        UserDTO userInfo = repository.getUserInformation(user);
+        view.signInSuccess(userInfo);
     }
 }

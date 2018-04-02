@@ -1,5 +1,7 @@
 package ai.magicmirror.magicmirror.features.user_auth.login;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import ai.magicmirror.magicmirror.models.UserDTO;
 
 /**
@@ -7,13 +9,9 @@ import ai.magicmirror.magicmirror.models.UserDTO;
  */
 
 public class LoginRepository implements LoginMVP.Repository {
-    @Override
-    public UserDTO phoneNumberAuth(String phoneNumber) {
-        return null;
-    }
 
     @Override
-    public UserDTO googleAuth() {
+    public UserDTO getUserInformation(FirebaseUser user) {
         return null;
     }
 }

@@ -1,5 +1,7 @@
 package ai.magicmirror.magicmirror.features.user_auth.login;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import ai.magicmirror.magicmirror.models.UserDTO;
 
 /**
@@ -24,10 +26,10 @@ public class LoginMVP {
     interface Presenter{
         void phoneNumberSignIn(String phoneNumber);
         void googleSignIn();
+        void loginSuccessful(FirebaseUser user);
     }
 
     interface Repository{
-        UserDTO phoneNumberAuth(String phoneNumber);
-        UserDTO googleAuth();
+        UserDTO getUserInformation(FirebaseUser user);
     }
 }
