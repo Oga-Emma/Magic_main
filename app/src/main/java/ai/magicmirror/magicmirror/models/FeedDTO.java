@@ -5,4 +5,5 @@ package ai.magicmirror.magicmirror.models;
  */
 
 public class FeedDTO {
+
 }

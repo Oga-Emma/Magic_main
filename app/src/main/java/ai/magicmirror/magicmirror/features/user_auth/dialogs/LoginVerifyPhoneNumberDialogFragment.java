@@ -9,7 +9,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +29,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import java.util.concurrent.TimeUnit;
 
 import ai.magicmirror.magicmirror.R;
+import ai.magicmirror.magicmirror.utils.DialogUtils;
 
 /**
  * Created by seven on 3/31/18.
@@ -52,16 +52,22 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
     private boolean isVerifyingCode;
 
     private ConstraintLayout verifyPasswordLayout, errorLayout,
-                            verifingCodeLayout;
+                            dialogLayout;
     private TextInputEditText verifyCodeEditText;
-    private TextView verificationErrorTextView;
+    private TextView verificationErrorTextView, progressMessageDialog;
 
     private PhoneAuthCredential credential;
     private FirebaseAuth auth;
     private String verificationCode;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
 
+    Button neutralButton;
+    Button positiveButton;
+    Button negativeButton;
+
     LoginVerifyPhoneNumber callBack;
+
+    private AlertDialog progressDialog;
 
 
     public LoginVerifyPhoneNumberDialogFragment() {
@@ -102,7 +108,8 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
             else{
                 auth = FirebaseAuth.getInstance();
                 auth.useAppLanguage();
-//                sendVerificationCode(phoneNumber);
+                sendVerificationCode(phoneNumber);
+
             }
         }else{
             Toast.makeText(getContext(), "Could not verify phone number",
@@ -122,19 +129,19 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
 
         verifyPasswordLayout = v.findViewById(R.id.auth_dialog_verify_code_constraint_layout);
         errorLayout = v.findViewById(R.id.auth_dialog_fragment_error_authenticating_constraint_layout);
-        verifingCodeLayout = v.findViewById(R.id.verifying_code_layout);
+        dialogLayout = v.findViewById(R.id.progress_dialog_layout);
 
         verifyCodeEditText = v.findViewById(R.id.verify_code_text_input_layout);
         verificationErrorTextView = v.findViewById(R.id.verification_error_text_view);
+        progressMessageDialog = v.findViewById(R.id.dialog_text_text_view);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
         dialog.setView(v)
                 .setCancelable(false);
 
         if(showError) {
-            verifyPasswordLayout.setVisibility(View.GONE);
-            verifingCodeLayout.setVisibility(View.GONE);
-            errorLayout.setVisibility(View.VISIBLE);
+
+            showAuthErrorDialog("Phone number authentication failed. \nPlease try again");
 //            dialog.setPositiveButton("Try again", new DialogInterface.OnClickListener() {
 //                @Override
 //                public void onClick(DialogInterface dialog, int which) {
@@ -143,7 +150,7 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
 //            });
         } else{
             errorLayout.setVisibility(View.GONE);
-            verifingCodeLayout.setVisibility(View.GONE);
+            dialogLayout.setVisibility(View.GONE);
             verifyPasswordLayout.setVisibility(View.VISIBLE);
             dialog.setPositiveButton("Verify", new DialogInterface.OnClickListener() {
                 @Override
@@ -168,40 +175,34 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
         return dialog.create();
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
-
         if(!showError) {
             final AlertDialog d = (AlertDialog) getDialog();
             if (d != null) {
-                final Button neutralButton = (Button) d.getButton(Dialog.BUTTON_NEUTRAL);
+                neutralButton = (Button) d.getButton(Dialog.BUTTON_NEUTRAL);
                 neutralButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getContext(),
-                                "Resending verification code to " + phoneNumber,
-                                Toast.LENGTH_LONG).show();
 
-                        //resend verification code
+                                      //resend verification code
                         resendVerificationCode(phoneNumber, mResendToken);
+                        showProgressDialogLayout("Resending verification code to " + phoneNumber);
                        }
                 });
 
-                final Button positiveButton = (Button) d.getButton(Dialog.BUTTON_POSITIVE);
+
+                positiveButton = (Button) d.getButton(Dialog.BUTTON_POSITIVE);
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         final Boolean wantToCloseDialog = false;
                         //Do stuff, possibly set wantToCloseDialog to true then...
 
-                        errorLayout.setVisibility(View.GONE);
-                        verifingCodeLayout.setVisibility(View.VISIBLE);
-                        verifyPasswordLayout.setVisibility(View.GONE);
-
-//                        positiveButton.setEnabled(false);
-                        positiveButton.setVisibility(View.GONE);
-                        neutralButton.setVisibility(View.GONE);
+                        showProgressDialogLayout("Verifying code...");
 
                         isVerifyingCode = true;
 
@@ -213,7 +214,8 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
                 });
 
 
-                final Button negativeButton = (Button) d.getButton(Dialog.BUTTON_NEGATIVE);
+
+                negativeButton = (Button) d.getButton(Dialog.BUTTON_NEGATIVE);
                 negativeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -221,13 +223,7 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
                             d.dismiss();
                         }
                         else{
-                            errorLayout.setVisibility(View.GONE);
-                            verifingCodeLayout.setVisibility(View.GONE);
-                            verifyPasswordLayout.setVisibility(View.VISIBLE);
-
-//                        positiveButton.setEnabled(false);
-                            positiveButton.setVisibility(View.VISIBLE);
-                            neutralButton.setVisibility(View.VISIBLE);
+                            showVerifyCodeDialog();
 
                             isVerifyingCode = false;
                         }
@@ -237,6 +233,27 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
             }
 
         }
+        if(isVerifyingCode)
+            showProgressDialogLayout("Sending verification code to " + phoneNumber);
+
+
+
+
+        getDialog().setOnKeyListener(new DialogInterface.OnKeyListener()
+        {
+            @Override
+            public boolean onKey(android.content.DialogInterface dialog, int keyCode,android.view.KeyEvent event) {
+
+                if ((keyCode ==  android.view.KeyEvent.KEYCODE_BACK))
+                {
+                    dialog.dismiss();
+                    //Hide your keyboard here!!!
+                    return true; // pretend we've processed it
+                }
+                else
+                    return false; // pass on to be processed as normal
+            }
+        });
     }
 
     private void resendVerificationCode(String phoneNumber,
@@ -251,14 +268,16 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
     }
 
     private void sendVerificationCode(String phoneNumber){
+
+
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
-                60,                 // Timeout duration
+                5,                 // Timeout duration
                 TimeUnit.SECONDS,   // Unit of timeout
                 getActivity(),               // Activity (for callback binding)
                 mCallbacks);        // OnVerificationStateChangedCallbacks
 
-
+        isVerifyingCode = true;
 
     }
 
@@ -293,6 +312,9 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
                 // ...
             }
 
+            showAuthErrorDialog("Error sending verification code. Please ensure you are " +
+                        "connected to the internet and try again");
+
             // Show a message and update the UI
             // ...
         }
@@ -305,10 +327,14 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
             // by combining the code with a verification ID.
 //            Log.d(TAG, "onCodeSent:" + verificationId);
 
+            isVerifyingCode = false;
+            showVerifyCodeDialog();
+
             Toast.makeText(getContext(), "Verification code sent", Toast.LENGTH_SHORT).show();
             // Save verification ID and resending token so we can use them later
             verificationCode = verificationId;
             mResendToken = token;
+
 
             // ...
         }
@@ -336,26 +362,58 @@ public class LoginVerifyPhoneNumberDialogFragment extends DialogFragment {
 
                             }
 
-                            final Button positiveButton =
-                                    (Button) d.getButton(Dialog.BUTTON_POSITIVE);
+                            showAuthErrorDialog("Error authenticating phone number, check you" +
+                                    "internet connection and try again");
 
-                            final Button neutralButton =
-                                    (Button) d.getButton(Dialog.BUTTON_NEUTRAL);
-
-                            isVerifyingCode = false;
-
-                            errorLayout.setVisibility(View.GONE);
-                            verifingCodeLayout.setVisibility(View.GONE);
-                            verifyPasswordLayout.setVisibility(View.VISIBLE);
-
-                            positiveButton.setVisibility(View.VISIBLE);
-                            neutralButton.setVisibility(View.VISIBLE);
-
-                            verificationErrorTextView.setVisibility(View.VISIBLE);
+//                            verificationErrorTextView.setVisibility(View.VISIBLE);
                         }
                     }
                 });
     }
+
+
+    public void showVerifyCodeDialog(){
+        positiveButton.setVisibility(View.VISIBLE);
+        neutralButton.setVisibility(View.VISIBLE);
+        negativeButton.setVisibility(View.VISIBLE);
+        negativeButton.setText("Cancel");
+
+        verifyPasswordLayout.setVisibility(View.VISIBLE);
+        dialogLayout.setVisibility(View.GONE);
+        errorLayout.setVisibility(View.GONE);
+
+        isVerifyingCode = false;
+
+    }
+
+    public void showProgressDialogLayout(String message){
+
+        positiveButton.setVisibility(View.GONE);
+        neutralButton.setVisibility(View.GONE);
+        negativeButton.setVisibility(View.GONE);
+
+        progressMessageDialog.setText(message);
+
+        verifyPasswordLayout.setVisibility(View.GONE);
+        dialogLayout.setVisibility(View.VISIBLE);
+        errorLayout.setVisibility(View.GONE);
+
+    }
+
+    private void showAuthErrorDialog(String message){
+
+        positiveButton.setVisibility(View.GONE);
+        neutralButton.setVisibility(View.GONE);
+        negativeButton.setVisibility(View.VISIBLE);
+        negativeButton.setText("Close");
+
+        verifyPasswordLayout.setVisibility(View.GONE);
+        dialogLayout.setVisibility(View.GONE);
+        errorLayout.setVisibility(View.VISIBLE);
+
+        isVerifyingCode = false;
+    }
+
 
     public interface LoginVerifyPhoneNumber{
         void onLoginSuccessful(FirebaseUser user);

@@ -1,49 +1,52 @@
 package ai.magicmirror.magicmirror.features.user_auth.login;
 
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import ai.magicmirror.magicmirror.R;
-import ai.magicmirror.magicmirror.features.feeds.FeedActivity;
-import ai.magicmirror.magicmirror.features.profile_setup.ProfileSetupActivity;
+import ai.magicmirror.magicmirror.features.feed.FeedPageActivity;
+import ai.magicmirror.magicmirror.features.profile_setup.DreaProfileSetupActivity;
 import ai.magicmirror.magicmirror.features.user_auth.dialogs.LoginVerifyPhoneNumberDialogFragment;
+import ai.magicmirror.magicmirror.models.CountryDTO;
 import ai.magicmirror.magicmirror.models.UserDTO;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends Fragment implements View.OnClickListener,
+public class PhoneNumberLoginFragment extends Fragment implements View.OnClickListener,
 LoginMVP.View, LoginVerifyPhoneNumberDialogFragment.LoginVerifyPhoneNumber{
 
     private static final String TAG = "MagicMirror.ai " +
-            LoginFragment.class.getSimpleName();
+            PhoneNumberLoginFragment.class.getSimpleName();
     public static final int FRAGMENT_REQUEST_CODE = 1000;
     private static final int LOGIN_VERIFY_PASSWORD_REQUEST_CODE = 100;
 
     private Button signInBtn, googleSignInBtn;
-    private EditText phoneNumberEdt;
+    private EditText phoneNumberEdt, countryEdt;
     private TextView errorMessageTV;
+    TextInputLayout countryTextInputLayout;
 
     LoginMVP.Presenter presenter;
     LoginMVP.View view;
     LoginMVP.Repository repository;
 
     private String phoneNumber;
+    private int position = -1;
 
-    public LoginFragment() {
+    public PhoneNumberLoginFragment() {
         // Required empty public constructor
     }
 
@@ -51,34 +54,27 @@ LoginMVP.View, LoginVerifyPhoneNumberDialogFragment.LoginVerifyPhoneNumber{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.phone_number_login_fragment, container, false);
 
         repository = new LoginRepository();
 
         presenter = new LoginPresenter(this, repository);
 
+        countryEdt = view.findViewById(R.id.login_country_edit_text);
+        countryEdt.setOnClickListener(this);
         phoneNumberEdt = view.findViewById(R.id.login_activity_phone_number_edit_text);
         phoneNumberEdt.requestFocus();
+        phoneNumberEdt.setOnClickListener(this);
 
         errorMessageTV = view.findViewById(R.id.login_activity_error_message_text_view);
-
         signInBtn = view.findViewById(R.id.login_activity_sign_in_button);
-        googleSignInBtn = view.findViewById(R.id.login_activity_google_sign_in_button);
 
         signInBtn.setOnClickListener(this);
-        googleSignInBtn.setOnClickListener(this);
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // User is signed in
-            Toast.makeText(getContext(), user.getUid() + " signed in", Toast.LENGTH_SHORT).show();
-            presenter.loginSuccessful(user);
-
-        } else {
-            // No user is signed in
 
 
-        }
+        CountryDTO country = new CountryDTO("Nigeria", "+234");
+        countryEdt.setText(country.getName() + " (" + country.getCallCode() + ")");
+        presenter.setCountry(country);
 
         return view;
     }
@@ -90,29 +86,22 @@ LoginMVP.View, LoginVerifyPhoneNumberDialogFragment.LoginVerifyPhoneNumber{
         if(v.getId() == R.id.login_activity_sign_in_button){
 
             phoneNumber = phoneNumberEdt.getText().toString();
-
-//            Toast.makeText(getContext(),
-//                    "Phone Login button pressed, PHONE NUMBER = "
-//                            + phoneNumber,
-//                    Toast.LENGTH_SHORT).show();
-
-//            presenter.phoneNumberSignIn(phoneNumberEdt.getText().toString());
-
             presenter.phoneNumberSignIn(phoneNumber);
 
-            /*if(PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber) &&
-                    (phoneNumber.length() > 10)){
-                sendVerificationCode(phoneNumber);
-            }else {
+        }else if(v.getId() == R.id.login_country_edit_text){
+            countryEdt.clearFocus();
+            if(position == -1)
+                position = 160;
 
-            }*/
-
-        }else if(v.getId() == R.id.login_activity_google_sign_in_button){
-//            Toast.makeText(getApplicationContext(),
-//                    "E-mail Login button pressed",
-//                    Toast.LENGTH_SHORT).show();
-
-            presenter.googleSignIn();
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.login_activity_fragment_container, LoginSelectCountryFragment.newInstance(position))
+                    .addToBackStack("SELECT_COUNTRY")
+                    .commit();
+        }else if(v.getId() == R.id.login_activity_phone_number_edit_text){
+            InputMethodManager imm = (InputMethodManager) getActivity()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(phoneNumberEdt, InputMethodManager.SHOW_IMPLICIT);
         }
 
     }
@@ -124,15 +113,28 @@ LoginMVP.View, LoginVerifyPhoneNumberDialogFragment.LoginVerifyPhoneNumber{
 //                            + phoneNumber,
 //                    Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(getContext(), "Sending verification code to " + phoneNumber,
-                Toast.LENGTH_LONG).show();
+//        Toast.makeText(getContext(), "Sending verification code to " + phoneNumber,
+//                Toast.LENGTH_LONG).show();
 
         LoginVerifyPhoneNumberDialogFragment dialog
                 = LoginVerifyPhoneNumberDialogFragment.getInstance(phoneNumber);
         dialog.setCancelable(false);
+
+
         dialog.setTargetFragment(this, LOGIN_VERIFY_PASSWORD_REQUEST_CODE);
 
         dialog.show(getActivity().getSupportFragmentManager(), "VERIFY_PHONE");
+    }
+
+    public void setCountry(CountryDTO country){
+        if(null != country) {
+            countryEdt.setText(country.getName() + " (" + country.getCallCode() + ")");
+            presenter.setCountry(country);
+        }
+    }
+
+    public void setCountryPosition(int position) {
+        this.position = position;
     }
 
     @Override
@@ -145,9 +147,9 @@ LoginMVP.View, LoginVerifyPhoneNumberDialogFragment.LoginVerifyPhoneNumber{
         errorMessageTV.setText("");
 
         if(user == null) {
-            startActivity(new Intent(getActivity(), ProfileSetupActivity.class));
+            startActivity(new Intent(getActivity(), DreaProfileSetupActivity.class));
         }else{
-            startActivity(new Intent(getActivity(), FeedActivity.class));
+            startActivity(new Intent(getActivity(), FeedPageActivity.class));
         }
 
         getActivity().finish();
@@ -170,4 +172,5 @@ LoginMVP.View, LoginVerifyPhoneNumberDialogFragment.LoginVerifyPhoneNumber{
     public void onLoginSuccessful(FirebaseUser user) {
         presenter.loginSuccessful(user);
     }
+
 }

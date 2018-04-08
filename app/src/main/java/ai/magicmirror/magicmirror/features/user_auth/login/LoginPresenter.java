@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import ai.magicmirror.magicmirror.models.CountryDTO;
 import ai.magicmirror.magicmirror.models.UserDTO;
 
 /**
@@ -18,6 +19,7 @@ public class LoginPresenter implements LoginMVP.Presenter {
 
     private LoginMVP.View view;
     private LoginMVP.Repository repository;
+    private CountryDTO country;
 
     public LoginPresenter(LoginMVP.View view, LoginMVP.Repository repository){
         this.view = view;
@@ -29,6 +31,11 @@ public class LoginPresenter implements LoginMVP.Presenter {
 
         //validate phone number
         if(PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber)) {
+
+            if(phoneNumber.startsWith("0"))
+                phoneNumber = phoneNumber.substring(1);
+
+            phoneNumber = country.getCallCode() + phoneNumber;
 
             view.authenticatePhoneNumberSignIn(phoneNumber);
         }else {
@@ -44,5 +51,10 @@ public class LoginPresenter implements LoginMVP.Presenter {
     public void loginSuccessful(FirebaseUser user) {
         UserDTO userInfo = repository.getUserInformation(user);
         view.signInSuccess(userInfo);
+    }
+
+    @Override
+    public void setCountry(CountryDTO country) {
+        this.country = country;
     }
 }

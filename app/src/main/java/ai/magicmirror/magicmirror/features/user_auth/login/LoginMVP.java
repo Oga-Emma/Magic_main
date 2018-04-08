@@ -2,6 +2,7 @@ package ai.magicmirror.magicmirror.features.user_auth.login;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import ai.magicmirror.magicmirror.models.CountryDTO;
 import ai.magicmirror.magicmirror.models.UserDTO;
 
 /**
@@ -27,6 +28,7 @@ public class LoginMVP {
         void phoneNumberSignIn(String phoneNumber);
         void googleSignIn();
         void loginSuccessful(FirebaseUser user);
+        void setCountry(CountryDTO country);
     }
 
     interface Repository{

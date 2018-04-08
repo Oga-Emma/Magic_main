@@ -1,0 +1,65 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ai.magicmirror.magicmirror.features.feed.FeedPageActivity">
+
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="Search"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView"/>
+
+
+    <item
+        android:id="@+id/action_sort"
+        android:title="Sort by"
+        android:icon="@drawable/camera_button"
+        app:showAsAction="never">
+
+        <menu>
+            <item
+                android:id="@+id/action_sortby_most_recent"
+                android:title="Recently uploaded"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_sortby_most_swapped"
+                android:title="Most popular"
+                app:showAsAction="never" />
+
+        </menu>
+
+    </item>
+
+    <item
+        android:id="@+id/action_view"
+        android:title="View"
+        app:showAsAction="never">
+
+        <menu>
+            <item
+                android:id="@+id/action_view_medium_thumbnail"
+                android:title="Small thumbnail"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_view_medium_thumbnail"
+                android:title="Medium thumbnail"
+                app:showAsAction="never" />
+
+        </menu>
+
+    </item>
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_about"
+        android:title="About"
+        app:showAsAction="never" />
+
+</menu>

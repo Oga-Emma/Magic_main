@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,11 +22,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-
 import ai.magicmirror.magicmirror.R;
-import ai.magicmirror.magicmirror.features.feeds.FeedActivity;
-import ai.magicmirror.magicmirror.utils.FirebaseUtils;
+import ai.magicmirror.magicmirror.features.feed.FeedPageActivity;
+import ai.magicmirror.magicmirror.models.UserDTO;
 
 import static ai.magicmirror.magicmirror.utils.FirebaseUtils.Strings.*;
 
@@ -60,15 +57,26 @@ private DatabaseReference myRef;
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         myRef = FirebaseDatabase.getInstance().getReference();
 
-        String key = myRef.child(USERS).getKey();
-        if(!TextUtils.isEmpty(key)){
-            Toast.makeText(getContext(), "user already has account",
-                    Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(getContext(), "user does not have an account yet",
-                    Toast.LENGTH_SHORT).show();
-        }
+        myRef.child(USERS).child(currentUser.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    Toast.makeText(getContext(), "user already has account",
+                            Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getContext(), "user does not have an account yet",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getContext(), "error " +
+                        databaseError.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return v;
 
@@ -82,20 +90,20 @@ private DatabaseReference myRef;
 
             String id = currentUser.getUid();
 
-            HashMap<String, String> userHashMap= new HashMap<>();
-            userHashMap.put(USERNAME, "Mr7");
-            userHashMap.put(FACESHAPE, "2");
-            userHashMap.put(FACECOLOR, "1");
-            userHashMap.put(PROFILE_PICTURE_FULL, "default");
-            userHashMap.put(PROFILE_PICTURE_THUMBNAIL, "default");
+            UserDTO user = new UserDTO();
+            user.setUserName("Mr7");
+            user.setFaceShape(1);
+            user.setFullProfileImageUrl("default");
+            user.setThumbnailProfileImageUrl("default");
+            user.setFaceColor(1);
 
             myRef.child(USERS)
                     .child(id)
-                    .setValue(userHashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
-                        startActivity(new Intent(getContext(), FeedActivity.class));
+                        startActivity(new Intent(getContext(), FeedPageActivity.class));
                     }else{
                         Toast.makeText(getContext(),
                                 "Error creating profile " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -123,5 +131,6 @@ private DatabaseReference myRef;
 
         }
     };
+
 
 }

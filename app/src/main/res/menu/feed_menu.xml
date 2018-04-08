@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:id="@+id/top_level_menu">
+
+        <item android:title="Feed">
+            <menu>
+                <item android:title="Hairstyles"/>
+                <item android:title="Gele" />
+            </menu>
+        </item>
+
+    </group>
+
+    <item android:title="Help" />
+    <item android:title="About" />
+    <item android:title="Exit" />
+
+
+
+</menu>
