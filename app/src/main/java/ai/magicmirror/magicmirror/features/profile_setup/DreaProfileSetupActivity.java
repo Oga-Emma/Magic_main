@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,10 +22,25 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+
 import ai.magicmirror.magicmirror.R;
+import ai.magicmirror.magicmirror.features.feed.FeedPageActivity;
+import ai.magicmirror.magicmirror.features.user_auth.SigninFullScreenActivity;
+import ai.magicmirror.magicmirror.features.user_auth.UserDAO;
 import ai.magicmirror.magicmirror.utils.ImagePickerUtils;
+import es.dmoral.toasty.Toasty;
 
 public class DreaProfileSetupActivity extends AppCompatActivity
         implements FaceShapeAdapter.OnFaceShapeSelected,
@@ -39,9 +55,11 @@ public class DreaProfileSetupActivity extends AppCompatActivity
                 chooseFaceShapeLayout,chooseComplexionLayout, creatingProfileLayout,
                 profileCreatedLayout;
 
-    Button userNameDoneButton, selectImageButton, continueToFeedButton;
+    Button userNameDoneButton, selectImageButton, logoutDoneButton;
 
     ImageView selfieImageView;
+
+    TextView swipeLeftOrRightTextView;
 
     TextInputLayout usernameTextInputLayout;
     EditText userNameEditText;
@@ -75,12 +93,14 @@ public class DreaProfileSetupActivity extends AppCompatActivity
 
         userNameDoneButton = findViewById(R.id.user_name_done_button);
         userNameDoneButton.setOnClickListener(this::onClick);
-        continueToFeedButton = findViewById(R.id.continue_to_feed_button);
-        continueToFeedButton.setOnClickListener(this::onClick);
+        logoutDoneButton = findViewById(R.id.logout_done_button);
+        logoutDoneButton.setOnClickListener(this::onClick);
 
         selectImageButton = findViewById(R.id.select_selfie_image_button);
         selectImageButton.setOnClickListener(this);
         selfieImageView = findViewById(R.id.selfie_image_view);
+
+        swipeLeftOrRightTextView = findViewById(R.id.swipe_left_or_right_text_view);
 
         faceShapeRecyclerView = findViewById(R.id.face_shape_recycler_view);
         faceShapeRecyclerView.setLayoutManager(
@@ -163,37 +183,52 @@ public class DreaProfileSetupActivity extends AppCompatActivity
 
     }
 
-
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.select_selfie_image_button){
-            Intent chooseImageIntent = ImagePickerUtils.getPickImageIntent(DreaProfileSetupActivity.this);
+            Intent chooseImageIntent = ImagePickerUtils
+                    .getPickImageIntent(DreaProfileSetupActivity.this);
             startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
 
-        }else if(view.getId() == R.id.user_name_done_button){
+        }else if(view.getId() == R.id.user_name_done_button) {
 
-            view = this.getCurrentFocus();
-            if (view != null) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
+                view = this.getCurrentFocus();
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
 
-            if(!TextUtils.isEmpty(userNameEditText.getText().toString())) {
-                fadeIn(uploadPictureLayout, 1000);
-                handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //Do something after xms
-                        selectImageButton.setVisibility(View.VISIBLE);
-                    }
-                }, 3000);
+                if (!TextUtils.isEmpty(userNameEditText.getText().toString())) {
+                    fadeIn(uploadPictureLayout, 1000);
+                    handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Do something after x-ms
+                            selectImageButton.setVisibility(View.VISIBLE);
+                        }
+                    }, 3000);
 
+                } else {
+                    //show error
+
+                }
+
+
+        }else if(view.getId() == R.id.logout_done_button) {
+
+            if (logoutDoneButton.getText().equals("Continue")) {
+                startActivity(new Intent(DreaProfileSetupActivity.this, FeedPageActivity.class));
+                finish();
             }else{
-                //show error
 
+                UserDAO.getInstance(getApplicationContext())
+                        .signout(DreaProfileSetupActivity.this);
+
+                startActivity(new Intent(DreaProfileSetupActivity.this,
+                        SigninFullScreenActivity.class));
+                finish();
             }
-
         }
     }
 
@@ -207,7 +242,24 @@ public class DreaProfileSetupActivity extends AppCompatActivity
 
                 fadeIn(chooseFaceShapeLayout, 2000);
                 fadeIn(faceShapeRecyclerView, 3500);
+                fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
 
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        swipeLeftOrRightTextView.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+//                Toasty.normal(getApplicationContext(), "Image selected", Toast.LENGTH_SHORT).show();
                 break;
 
             default:
@@ -232,8 +284,24 @@ public class DreaProfileSetupActivity extends AppCompatActivity
 
         fadeIn(creatingProfileLayout, 2000);
         fadeIn(profileCreatedLayout, 6000);
+        fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                logoutDoneButton.setText("Continue");
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
 
 //        continueToFeedButton.setVisibility(View.VISIBLE);
-        fadeIn(continueToFeedButton, 7500);
+//        fadeIn(continueToFeedButton, 7500);
     }
 }

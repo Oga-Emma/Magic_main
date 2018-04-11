@@ -12,6 +12,7 @@ public class FirebaseUtils {
         public static final String FACECOLOR = "facecolor";
         public static final String PROFILE_PICTURE_FULL = "profile_picture_full";
         public static final String PROFILE_PICTURE_THUMBNAIL = "profile_picture_thumbnail";
+        public static final String UPLOADED_IMAGE = "uploaded_images";
 
     }
 }

@@ -1,345 +1,388 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/profile_drea_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/splash_screen_color"
     android:fillViewport="true"
     tools:context=".features.profile_setup.DreaProfileSetupActivity">
 
-    <android.support.constraint.ConstraintLayout
+    <Button
+        android:id="@+id/logout_done_button"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="16dp">
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/cancel_upload_button_background"
+        android:text="Logout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/drea_introduction_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+    <ScrollView
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/drea"
-                app:layout_constraintBottom_toBottomOf="@+id/drea_introduction_textview"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/drea_introduction_textview" />
+        android:id="@+id/profile_drea_scroll_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/logout_done_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/drea_introduction_textview"
-                android:layout_width="wrap_content"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="16dp">
+
+            <LinearLayout
+                android:id="@+id/drea_introduction_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/rounded_edge_text_view_background"
-                android:text="@string/drea_introduction"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/drea_introduction_imageview"
-                app:layout_constraintTop_toTopOf="parent" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/drea_choose_username_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/drea_introduction_layout"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/drea_introduction_layout"
-            app:layout_constraintTop_toBottomOf="@+id/drea_introduction_layout">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:layout_constraintBottom_toBottomOf="@+id/drea_introduction_textview"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/drea_introduction_textview"
-                app:srcCompat="@drawable/drea" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/drea_username_textview"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/drea"
+                    app:layout_constraintBottom_toBottomOf="@+id/drea_introduction_textview"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/drea_introduction_textview" />
+
+                <TextView
+                    android:id="@+id/drea_introduction_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/rounded_edge_text_view_background"
+                    android:text="@string/drea_introduction"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/drea_introduction_imageview"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/drea_choose_username_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/drea_introduction_layout"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/drea_introduction_layout"
+                app:layout_constraintTop_toBottomOf="@+id/drea_introduction_layout">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/drea_introduction_textview"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/drea_introduction_textview"
+                    app:srcCompat="@drawable/drea" />
+
+                <TextView
+                    android:id="@+id/drea_username_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/rounded_edge_text_view_background"
+                    android:text="@string/drea_choose_user_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/drea_introduction_imageview"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/username_text_input_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/rounded_edge_text_view_background"
-                android:text="@string/drea_choose_user_name"
+                android:minWidth="200dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/drea_choose_username_layout">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/user_name_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Username"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/drea_choose_upload_picture_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/drea_introduction_imageview"
-                app:layout_constraintTop_toTopOf="parent" />
-        </LinearLayout>
+                app:layout_constraintStart_toStartOf="@+id/drea_choose_username_layout"
+                app:layout_constraintTop_toBottomOf="@+id/user_name_done_button">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/username_text_input_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/rounded_edge_text_view_background"
-            android:minWidth="200dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/drea_choose_username_layout">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/drea" />
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/user_name_edit_text"
+                <TextView
+                    android:id="@+id/drea_upload_picture_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/rounded_edge_text_view_background"
+                    android:text="@string/drea_selfie" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/drea_faceshape_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/drea_choose_username_layout"
+                app:layout_constraintTop_toBottomOf="@+id/selfie_image_view">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/drea" />
+
+                <TextView
+                    android:id="@+id/drea_faceshape_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/rounded_edge_text_view_background"
+                    android:text="@string/drea_face_shape" />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/face_shape_recycler_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_edge_recycler_view_background"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/drea_faceshape_layout"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/drea_faceshape_layout"
+                app:layout_constraintTop_toBottomOf="@+id/drea_faceshape_layout">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <LinearLayout
+                android:id="@+id/drea_choose_complextion_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/drea_choose_username_layout"
+                app:layout_constraintTop_toBottomOf="@+id/swipe_left_or_right_text_view">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/drea" />
+
+                <TextView
+                    android:id="@+id/drea_complexion_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/rounded_edge_text_view_background"
+                    android:text="@string/drea_complexion" />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/face_complexion_recycler_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/drea_faceshape_layout"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/drea_faceshape_layout"
+                app:layout_constraintTop_toBottomOf="@+id/drea_choose_complextion_layout">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <LinearLayout
+                android:id="@+id/drea_creating_profile_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/drea_choose_complextion_layout"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/drea_choose_username_layout"
+                app:layout_constraintTop_toBottomOf="@+id/face_complexion_recycler_view">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/drea" />
+
+                <TextView
+                    android:id="@+id/drea_creating_profile_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/rounded_edge_text_view_background"
+                    android:text="@string/drea_creating_profile" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/drea_profile_created_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/drea_creating_profile_layout"
+                app:layout_constraintStart_toStartOf="@+id/drea_creating_profile_layout"
+                app:layout_constraintTop_toBottomOf="@+id/drea_creating_profile_layout">
 
-        <LinearLayout
-            android:id="@+id/drea_choose_upload_picture_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/drea_choose_username_layout"
-            app:layout_constraintTop_toBottomOf="@+id/user_name_done_button">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/drea" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/drea" />
+                <TextView
+                    android:id="@+id/drea_profile_created_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/rounded_edge_text_view_background"
+                    android:text="@string/drea_profile_created" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/drea_upload_picture_textview"
+            <Button
+                android:id="@+id/select_selfie_image_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/rounded_edge_text_view_background"
-                android:text="@string/drea_selfie" />
-        </LinearLayout>
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@drawable/camera_button"
+                android:drawablePadding="4dp"
+                android:text="select image"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/drea_choose_upload_picture_layout"
+                app:layout_constraintTop_toBottomOf="@+id/drea_choose_upload_picture_layout" />
 
-        <LinearLayout
-            android:id="@+id/drea_faceshape_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/drea_choose_username_layout"
-            app:layout_constraintTop_toBottomOf="@+id/selfie_image_view">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/drea" />
-
-            <TextView
-                android:id="@+id/drea_faceshape_textview"
+            <Button
+                android:id="@+id/continue_to_feed_button"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/rounded_edge_text_view_background"
-                android:text="@string/drea_face_shape" />
-        </LinearLayout>
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:drawableEnd="@drawable/ic_arrow_forward"
+                android:drawableRight="@drawable/ic_arrow_forward"
+                android:text="Continue to Feed"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/drea_profile_created_layout"
+                app:layout_constraintVertical_bias="0.0" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/face_shape_recycler_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_edge_recycler_view_background"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/drea_faceshape_layout"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/drea_faceshape_layout"
-            app:layout_constraintTop_toBottomOf="@+id/drea_faceshape_layout">
+            <Button
+                android:id="@+id/user_name_done_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="-2dp"
+                android:layout_marginRight="-2dp"
+                android:text="Done"
+                android:textSize="14sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/username_text_input_layout"
+                app:layout_constraintTop_toBottomOf="@+id/username_text_input_layout" />
 
-        </android.support.v7.widget.RecyclerView>
-
-        <LinearLayout
-            android:id="@+id/drea_choose_complextion_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/drea_choose_username_layout"
-            app:layout_constraintTop_toBottomOf="@+id/face_shape_recycler_view">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/drea" />
+            <ImageView
+                android:id="@+id/selfie_image_view"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/select_selfie_image_button"
+                app:layout_constraintTop_toBottomOf="@+id/select_selfie_image_button"
+                app:srcCompat="@drawable/ic_person" />
 
             <TextView
-                android:id="@+id/drea_complexion_textview"
+                android:id="@+id/swipe_left_or_right_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/rounded_edge_text_view_background"
-                android:text="@string/drea_complexion" />
-        </LinearLayout>
+                android:text="<<< Swipe right or left for more face shapes >>>"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/face_shape_recycler_view"
+                app:layout_constraintStart_toStartOf="@+id/face_shape_recycler_view"
+                app:layout_constraintTop_toBottomOf="@+id/face_shape_recycler_view" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/face_complexion_recycler_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/drea_faceshape_layout"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/drea_faceshape_layout"
-            app:layout_constraintTop_toBottomOf="@+id/drea_choose_complextion_layout">
-
-        </android.support.v7.widget.RecyclerView>
-
-        <LinearLayout
-            android:id="@+id/drea_creating_profile_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/drea_choose_complextion_layout"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/drea_choose_username_layout"
-            app:layout_constraintTop_toBottomOf="@+id/face_complexion_recycler_view">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/drea" />
-
-            <TextView
-                android:id="@+id/drea_creating_profile_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/rounded_edge_text_view_background"
-                android:text="@string/drea_creating_profile" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/drea_profile_created_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/drea_creating_profile_layout"
-            app:layout_constraintStart_toStartOf="@+id/drea_creating_profile_layout"
-            app:layout_constraintTop_toBottomOf="@+id/drea_creating_profile_layout">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/drea" />
-
-            <TextView
-                android:id="@+id/drea_profile_created_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/rounded_edge_text_view_background"
-                android:text="@string/drea_profile_created" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/select_selfie_image_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:drawableLeft="@drawable/camera_button"
-            android:drawablePadding="4dp"
-            android:text="select image"
-            android:textAllCaps="false"
-            android:textSize="14sp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/drea_choose_upload_picture_layout"
-            app:layout_constraintTop_toBottomOf="@+id/drea_choose_upload_picture_layout" />
-
-        <Button
-            android:id="@+id/continue_to_feed_button"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:drawableEnd="@drawable/ic_arrow_forward"
-            android:drawableRight="@drawable/ic_arrow_forward"
-            android:text="Continue to Feed"
-            android:textAllCaps="false"
-            android:textSize="14sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/drea_profile_created_layout"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <Button
-            android:id="@+id/user_name_done_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="-2dp"
-            android:layout_marginRight="-2dp"
-            android:text="Done"
-            android:textSize="14sp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/username_text_input_layout"
-            app:layout_constraintTop_toBottomOf="@+id/username_text_input_layout" />
-
-        <ImageView
-            android:id="@+id/selfie_image_view"
-            android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/select_selfie_image_button"
-            app:layout_constraintTop_toBottomOf="@+id/select_selfie_image_button"
-            app:srcCompat="@drawable/ic_person" />
-
-    </android.support.constraint.ConstraintLayout>
-</ScrollView>
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>
