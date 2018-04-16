@@ -376,7 +376,7 @@
                 android:id="@+id/swipe_left_or_right_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="<<< Swipe right or left for more face shapes >>>"
+                android:text=" Swipe right or left for more face shapes"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/face_shape_recycler_view"

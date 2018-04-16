@@ -85,43 +85,6 @@ public class FeedPageFeedFragment extends Fragment {
         return view;
     }
 
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.feed_main_menu, menu);
-
-//        MenuItem item = menu.findItem(R.id.action_search);
-//
-//        SearchView searchView = new SearchView(((FeedPageActivity) mContext)
-//                .getSupportActionBar().getThemedContext());
-//
-//        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW
-//                | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-//
-//        MenuItemCompat.setActionView(item, searchView);
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                return false;
-//            }
-//        });
-//        searchView.setOnClickListener(new View.OnClickListener() {
-//                                          @Override
-//                                          public void onClick(View v) {
-//
-//                                          }
-//                                      }
-//        );
-
-        setHasOptionsMenu(true);
-    }
-
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

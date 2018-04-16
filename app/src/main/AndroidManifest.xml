@@ -21,17 +21,18 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".features.user_auth.SigninFullScreenActivity" />
+                android:value=".features.user_auth.SignInActivity" />
         </activity>
         <activity android:name=".features.profile_setup.ProfileSetupActivity" />
         <activity
-            android:name=".features.user_auth.SigninFullScreenActivity"
+            android:name=".features.user_auth.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".features.profile_setup.DreaProfileSetupActivity"
@@ -39,7 +40,8 @@
         <activity
             android:name=".features.feed.FeedPageActivity"
             android:label="@string/title_activity_feed_page"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme">
+        </activity>
         <activity
             android:name=".features.user_profile.UserProfileActivity"
             android:launchMode="singleTop">
@@ -50,7 +52,8 @@
         <activity android:name=".features.swap.SwapActivity" />
         <activity
             android:name=".features.admin.AdminActivity"
-            android:label="@string/title_activity_admin" />
+            android:label="@string/title_activity_admin">
+        </activity>
         <activity android:name=".features.admin.UploadImageActivity" />
 
         <receiver
@@ -58,7 +61,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".features.user_auth.GoogleSignInActivity"></activity>
     </application>
 
 </manifest>

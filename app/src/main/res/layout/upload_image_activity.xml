@@ -33,51 +33,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline19">
 
-        <Button
-            android:id="@+id/button9"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/cancel_upload_button_background"
-            android:text="Cancel upload"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <TextView
             android:id="@+id/textView20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
             android:text="Uploading Images"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            app:layout_constraintBottom_toTopOf="@+id/image_file_names_text_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/image_file_names_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
             android:gravity="center"
             android:singleLine="true"
             android:text="my selfiew.png my selfiew.png my selfiew.png my selfiew.png"
-            app:layout_constraintBottom_toTopOf="@+id/progressBar4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
         <ProgressBar
             android:id="@+id/progressBar4"
@@ -88,27 +73,27 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="77dp"
             android:indeterminate="true"
-            app:layout_constraintBottom_toTopOf="@+id/uploaded_file_counter_text_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_file_names_text_view" />
 
         <TextView
             android:id="@+id/uploaded_file_counter_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
             android:text="1/20"
-            app:layout_constraintBottom_toTopOf="@+id/button9"
-            app:layout_constraintStart_toStartOf="@+id/progressBar4" />
+            app:layout_constraintStart_toStartOf="@+id/progressBar4"
+            app:layout_constraintTop_toBottomOf="@+id/progressBar4" />
 
         <TextView
             android:id="@+id/uploaded_file_percent_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="5%"
-            app:layout_constraintBottom_toBottomOf="@+id/uploaded_file_counter_text_view"
-            app:layout_constraintEnd_toEndOf="@+id/progressBar4" />
+            app:layout_constraintEnd_toEndOf="@+id/progressBar4"
+            app:layout_constraintTop_toBottomOf="@+id/progressBar4" />
 
     </android.support.constraint.ConstraintLayout>
 

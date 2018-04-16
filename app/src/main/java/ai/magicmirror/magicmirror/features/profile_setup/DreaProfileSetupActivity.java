@@ -3,6 +3,8 @@ package ai.magicmirror.magicmirror.features.profile_setup;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -13,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -25,22 +28,29 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 import ai.magicmirror.magicmirror.R;
+import ai.magicmirror.magicmirror.database.UserDB;
+import ai.magicmirror.magicmirror.dto.UserDTO;
 import ai.magicmirror.magicmirror.features.feed.FeedPageActivity;
-import ai.magicmirror.magicmirror.features.user_auth.SigninFullScreenActivity;
+import ai.magicmirror.magicmirror.features.user_auth.SignInActivity;
 import ai.magicmirror.magicmirror.features.user_auth.UserDAO;
+import ai.magicmirror.magicmirror.utils.FirebaseUtils;
 import ai.magicmirror.magicmirror.utils.ImagePickerUtils;
 import es.dmoral.toasty.Toasty;
+import id.zelory.compressor.Compressor;
 
 public class DreaProfileSetupActivity extends AppCompatActivity
         implements FaceShapeAdapter.OnFaceShapeSelected,
@@ -49,29 +59,35 @@ public class DreaProfileSetupActivity extends AppCompatActivity
     private static final int PICK_IMAGE_ID = 200;
     private static final String FADE_IN_ANIMATION = "fade_in";
 
-    ScrollView scrollView;
+    private static final long TIME_INTERVAL = 2000;
+    private long mBackPressed;
 
-    LinearLayout introductionLayout, chooseUserNameLayout, uploadPictureLayout,
+    private ScrollView scrollView;
+
+    private LinearLayout introductionLayout, chooseUserNameLayout, uploadPictureLayout,
                 chooseFaceShapeLayout,chooseComplexionLayout, creatingProfileLayout,
                 profileCreatedLayout;
 
-    Button userNameDoneButton, selectImageButton, logoutDoneButton;
-
-    ImageView selfieImageView;
-
-    TextView swipeLeftOrRightTextView;
-
-    TextInputLayout usernameTextInputLayout;
-    EditText userNameEditText;
+    private Button userNameDoneButton, selectImageButton, logoutDoneButton;
+    private ImageView selfieImageView;
+    private TextView swipeLeftOrRightTextView;
+    private TextInputLayout usernameTextInputLayout;
+    private EditText userNameEditText;
 
     RecyclerView faceShapeRecyclerView, complextionRecyclerView;
+    private FaceShapeAdapter faceShapeAdapter;
 
-    FaceShapeAdapter faceShapeAdapter;
+    private Animation fadeInAnimation;
 
-    Animation fadeInAnimation;
-
-    Handler handler;
+    private Handler handler;
     private boolean isRunning;
+
+    private String selfieImageDownloadUrl;
+
+
+    Bitmap selfieImageFull = null;
+    Bitmap selfieImageThumbnail = null;
+    private Bitmap selfieImageBitmap = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,49 +234,175 @@ public class DreaProfileSetupActivity extends AppCompatActivity
         }else if(view.getId() == R.id.logout_done_button) {
 
             if (logoutDoneButton.getText().equals("Continue")) {
-                startActivity(new Intent(DreaProfileSetupActivity.this, FeedPageActivity.class));
-                finish();
+                setupUserProfile();
+
+//                startActivity(new Intent(DreaProfileSetupActivity.this, FeedPageActivity.class));
+//                finish();
             }else{
 
-                UserDAO.getInstance(getApplicationContext())
-                        .signout(DreaProfileSetupActivity.this);
+                UserDB.getInstance(this).signout(this);
 
-                startActivity(new Intent(DreaProfileSetupActivity.this,
-                        SigninFullScreenActivity.class));
+                Intent intent = new Intent(this, SignInActivity.class);
+                intent.putExtra(SignInActivity.ACTIVITY_STARTED_FROM_LAUNCHER, false);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 finish();
             }
         }
+    }
+
+    private void setupUserProfile() {
+
+        if(selfieImageView != null) {
+//            Bitmap bitmap = selfieImageView.getDrawingCache();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            selfieImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+            StorageReference full_image_path = FirebaseStorage.getInstance().getReference()
+                    .child(FirebaseUtils.USER_PROFILE_IMAGE__FULL_IMAGE_LOCATON)
+                    .child(userId + "." + "jpg");
+
+            UploadTask fullImagePploadTask = full_image_path.putBytes(data);
+            fullImagePploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    String fullImageUrl = downloadUrl.toString();
+
+                    StorageReference thumbnail_image_path = FirebaseStorage.getInstance().getReference()
+                            .child(FirebaseUtils.USER_PROFILE_IMAGE__THUMBNAIL_LOCATON)
+                            .child(userId + "." + "jpg");
+
+                    UploadTask ThumbnailUploadTask = thumbnail_image_path.putBytes(data);
+                    ThumbnailUploadTask.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                            String thumbnailImageUrl = downloadUrl.toString();
+
+                            UserDTO user = new UserDTO();
+                            user.setUserName(userNameEditText.getText().toString());
+                            user.setProfileImagefullUrl(fullImageUrl);
+                            user.setProfileImageThumbnailUrl(thumbnailImageUrl);
+                            user.setFaceshape(1);
+                            user.setFaceComplexion(1);
+
+                            DatabaseReference database = FirebaseDatabase.getInstance()
+                                    .getReference();
+                            database.child(FirebaseUtils.Database._USERS_TABLE).child(userId).setValue(user)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            startActivity(new Intent(DreaProfileSetupActivity.this,
+                                                    FeedPageActivity.class));
+
+                                            finish();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toasty.error(getApplicationContext(), "Error creating profile, please try agagin",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+
+                        }
+                    });
+                }
+            });
+        }else{
+            Toasty.error(getApplicationContext(), "Error creating profile, please try agagin",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void uploadImageBitmap(ImageView imageView) {
+        // Get the data from an ImageView as bytes
+        imageView.setDrawingCacheEnabled(true);
+        imageView.buildDrawingCache();
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case PICK_IMAGE_ID:
-                Bitmap bitmap = ImagePickerUtils.getImageFromResult(this, resultCode, data);
-                selfieImageView.setImageBitmap(bitmap);
-                selfieImageView.setVisibility(View.VISIBLE);
+                selfieImageBitmap = ImagePickerUtils.getImageFromResult(this, resultCode, data);
 
-                fadeIn(chooseFaceShapeLayout, 2000);
-                fadeIn(faceShapeRecyclerView, 3500);
-                fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+                File file = ImagePickerUtils.convertBitmapToFile(this, selfieImageBitmap);
 
-                    }
+                if(file != null) {
+                    try {
+                        selfieImageFull = new Compressor(this)
+                                .compressToBitmap(file);
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        swipeLeftOrRightTextView.setVisibility(View.VISIBLE);
-                    }
+                        selfieImageThumbnail = new Compressor(this)
+                                .setMaxWidth(200)
+                                .setMaxHeight(200)
+                                .setQuality(75)
+                                .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+                                        Environment.DIRECTORY_PICTURES).getAbsolutePath())
+                                .compressToBitmap(file);
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                        if(selfieImageFull != null && selfieImageThumbnail != null) {
+                            selfieImageView.setImageBitmap(selfieImageFull);
+                            selfieImageView.setVisibility(View.VISIBLE);
 
-                    }
-                });
+                            fadeIn(chooseFaceShapeLayout, 2000);
+                            fadeIn(faceShapeRecyclerView, 3500);
+                            fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    swipeLeftOrRightTextView.setVisibility(View.VISIBLE);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+
+                                }
+                            });
+                        }else{
+                            Toasty.error(this, "Error reading image, please try again",
+                                    Toast.LENGTH_LONG).show();
+
+                        }
 
 //                Toasty.normal(getApplicationContext(), "Image selected", Toast.LENGTH_SHORT).show();
-                break;
+                        break;
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        Log.e("TAG", e.getMessage());
+                        Toasty.error(this, "Something went wrong, please try again", Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                }else{
+                    Toasty.error(this, "Error1 reading image, please try again", Toast.LENGTH_LONG).show();
+                }
 
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -304,4 +446,25 @@ public class DreaProfileSetupActivity extends AppCompatActivity
 //        continueToFeedButton.setVisibility(View.VISIBLE);
 //        fadeIn(continueToFeedButton, 7500);
     }
+
+
+    @Override
+    public void onBackPressed() {
+
+        if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis())
+        {
+            super.onBackPressed();
+            return;
+        }
+        else {
+                /*Toast.makeText(getBaseContext(),
+                    "Press back again to exit", Toast.LENGTH_SHORT).show(); */
+
+            Toasty.warning(getBaseContext(),
+                    "Press back again to exit.", Toast.LENGTH_SHORT, true).show();
+        }
+        mBackPressed = System.currentTimeMillis();
+
+    }
+
 }

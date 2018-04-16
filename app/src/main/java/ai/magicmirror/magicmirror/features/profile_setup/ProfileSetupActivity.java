@@ -4,8 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import ai.magicmirror.magicmirror.R;
+import ai.magicmirror.magicmirror.features.BaseActivity;
 
-public class ProfileSetupActivity extends AppCompatActivity {
+public class ProfileSetupActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,4 +19,5 @@ public class ProfileSetupActivity extends AppCompatActivity {
                 .add(R.id.profile_setup_fragment_container,
                         new ProfileSetupFragment()).commit();
     }
+
 }

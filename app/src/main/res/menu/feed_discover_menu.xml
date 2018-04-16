@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ai.magicmirror.magicmirror.features.feed.FeedPageActivity">
 
+<!--
 
     <item
         android:id="@+id/action_search"
@@ -61,5 +62,6 @@
         android:id="@+id/action_about"
         android:title="About"
         app:showAsAction="never" />
+-->
 
 </menu>

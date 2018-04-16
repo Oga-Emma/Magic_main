@@ -1,9 +1,8 @@
 package ai.magicmirror.magicmirror.features.user_auth.login;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import ai.magicmirror.magicmirror.BaseActivity;
+import ai.magicmirror.magicmirror.features.BaseActivity;
 import ai.magicmirror.magicmirror.R;
 import ai.magicmirror.magicmirror.models.CountryDTO;
 

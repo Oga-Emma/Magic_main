@@ -8,10 +8,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import ai.magicmirror.magicmirror.models.UserDTO;
-
-import static org.junit.Assert.*;
-
 /**
  * Created by seven on 3/30/18.
  */

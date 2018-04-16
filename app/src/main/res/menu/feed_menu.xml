@@ -1,22 +1,56 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ai.magicmirror.magicmirror.features.feed.FeedPageActivity">
 
-    <group android:id="@+id/top_level_menu">
+    <item
+        android:id="@+id/action_sort"
+        android:title="Sort by"
+        android:icon="@drawable/camera_button"
+        app:showAsAction="never">
 
-        <item android:title="Feed">
-            <menu>
-                <item android:title="Hairstyles"/>
-                <item android:title="Gele" />
-            </menu>
-        </item>
+        <menu>
+            <item
+                android:id="@+id/action_sortby_most_recent"
+                android:title="Most recent"
+                app:showAsAction="never" />
 
-    </group>
+            <item
+                android:id="@+id/action_sortby_most_swapped"
+                android:title="Most popular"
+                app:showAsAction="never" />
 
-    <item android:title="Help" />
-    <item android:title="About" />
-    <item android:title="Exit" />
+        </menu>
 
+    </item>
 
+    <item
+        android:id="@+id/action_view"
+        android:title="View"
+        app:showAsAction="never">
+
+        <menu>
+            <item
+                android:id="@+id/action_view_small_thumbnail"
+                android:title="Small thumbnail"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_view_medium_thumbnail"
+                android:title="Medium thumbnail"
+                app:showAsAction="never" />
+
+        </menu>
+
+    </item>
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_about"
+        android:title="About"
+        app:showAsAction="never" />
 
 </menu>

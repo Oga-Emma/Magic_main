@@ -17,4 +17,13 @@ public class DialogUtils {
 
         return dialog.create();
     }
+
+    public static AlertDialog getErrorDialog(Context context, String message){
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_progress_layout, null);
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setView(view);
+
+        return dialog.create();
+    }
 }

@@ -40,6 +40,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:12.0.1'
     implementation 'com.google.android.gms:play-services-auth:12.0.1'
     implementation 'com.google.firebase:firebase-storage:12.0.1'
+    implementation 'com.firebaseui:firebase-ui-storage:0.6.0'
 
     //Test
     testImplementation 'junit:junit:4.12'
@@ -55,6 +56,8 @@ dependencies {
     implementation 'com.github.GrenderG:Toasty:1.2.8'
     implementation 'com.github.ybq:Android-SpinKit:1.1.0'
     implementation 'com.bogdwellers:pinchtozoom:0.1'
+    implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
+    implementation 'id.zelory:compressor:2.1.0'
 //    compile 'com.miguelcatalan:materialsearchview:1.4.0'
 //    compile 'com.airbnb.android:lottie:2.5.3'
 }

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.OpenableColumns;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,10 +16,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ai.magicmirror.magicmirror.R;
+import ai.magicmirror.magicmirror.database.UploadImageDB;
+import ai.magicmirror.magicmirror.dto.FeedDTO;
+import ai.magicmirror.magicmirror.dto.OriginalImageDTO;
 import es.dmoral.toasty.Toasty;
 
 public class UploadImageActivity extends AppCompatActivity implements View.OnClickListener {
@@ -36,7 +46,6 @@ public class UploadImageActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.upload_image_activity);
-
 
         if(!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)){
             Toasty.error(getApplicationContext(), "Sorry you need a device running on " +
@@ -60,6 +69,7 @@ public class UploadImageActivity extends AppCompatActivity implements View.OnCli
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == IMAGE_SELECTED_REQUEST_CODE && resultCode == RESULT_OK){
+
 
             uploadingImageLayout.setVisibility(View.VISIBLE);
 
@@ -140,9 +150,13 @@ public class UploadImageActivity extends AppCompatActivity implements View.OnCli
     }
 
     private boolean uploadImage(Uri imageLocation) {
-        //upload image
+        String result = UploadImageDB.getInstance()
+                .uploadImage(imageLocation);
 
-        return true;
+        if(result != null && !result.isEmpty())
+            return true;
+
+        return false;
     }
 
     private int getPercentageDone(int uploadedCount, int totalCount) {
@@ -192,4 +206,8 @@ public class UploadImageActivity extends AppCompatActivity implements View.OnCli
 
         }
     }
+
+
+    /////////////////////////// INTERFACE FOR UPLOADING UI DIALOG///////////////////////////
+
 }

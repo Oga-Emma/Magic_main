@@ -2,7 +2,7 @@ package ai.magicmirror.magicmirror.features.user_auth.login;
 
 import com.google.firebase.auth.FirebaseUser;
 
-import ai.magicmirror.magicmirror.models.UserDTO;
+import ai.magicmirror.magicmirror.dto.UserDTO;
 
 /**
  * Created by seven on 3/30/18.

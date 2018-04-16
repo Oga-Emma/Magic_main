@@ -2,12 +2,11 @@ package ai.magicmirror.magicmirror.features.user_auth.login;
 
 
 import android.telephony.PhoneNumberUtils;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import ai.magicmirror.magicmirror.dto.UserDTO;
 import ai.magicmirror.magicmirror.models.CountryDTO;
-import ai.magicmirror.magicmirror.models.UserDTO;
 
 /**
  * Created by seven on 3/30/18.

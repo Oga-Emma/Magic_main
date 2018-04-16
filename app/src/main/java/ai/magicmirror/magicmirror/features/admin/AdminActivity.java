@@ -1,26 +1,29 @@
 package ai.magicmirror.magicmirror.features.admin;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import ai.magicmirror.magicmirror.BaseActivity;
+import ai.magicmirror.magicmirror.features.BaseActivity;
 import ai.magicmirror.magicmirror.R;
+import ai.magicmirror.magicmirror.features.user_auth.SignInActivity;
 import es.dmoral.toasty.Toasty;
+
+import static ai.magicmirror.magicmirror.features.user_auth.SignInActivity.ACTIVITY_STARTED_FROM_LAUNCHER;
 
 public class AdminActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView mTextMessage;
+
+    private static final long TIME_INTERVAL = 2000;
+    private long mBackPressed;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -61,6 +64,7 @@ public class AdminActivity extends BaseActivity implements View.OnClickListener 
         Toolbar toolbar = findViewById(R.id.admin_toolbar);
         setSupportActionBar(toolbar);
 
+
     }
 
     @Override
@@ -72,10 +76,14 @@ public class AdminActivity extends BaseActivity implements View.OnClickListener 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 //
-//        if(item.getItemId() == R.id.admin_upload_menu_item){
-//
-//            return true;
-//        }
+        if(item.getItemId() == R.id.admin_menu_logout){
+            Intent intent = new Intent(AdminActivity.this, SignInActivity.class);
+            intent.putExtra(ACTIVITY_STARTED_FROM_LAUNCHER, false);
+            startActivity(intent);
+
+            finish();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -84,5 +92,23 @@ public class AdminActivity extends BaseActivity implements View.OnClickListener 
 
     }
 
+    @Override
+    public void onBackPressed() {
+
+        if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis())
+            {
+                super.onBackPressed();
+                return;
+            }
+            else {
+                /*Toast.makeText(getBaseContext(),
+                    "Press back again to exit", Toast.LENGTH_SHORT).show(); */
+
+                Toasty.warning(getBaseContext(),
+                        "Press back again to exit.", Toast.LENGTH_SHORT, true).show();
+            }
+            mBackPressed = System.currentTimeMillis();
+
+    }
 
 }

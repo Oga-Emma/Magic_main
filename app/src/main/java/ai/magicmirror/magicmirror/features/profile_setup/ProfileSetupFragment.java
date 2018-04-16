@@ -23,10 +23,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import ai.magicmirror.magicmirror.R;
+import ai.magicmirror.magicmirror.dto.UserDTO;
 import ai.magicmirror.magicmirror.features.feed.FeedPageActivity;
-import ai.magicmirror.magicmirror.models.UserDTO;
 
-import static ai.magicmirror.magicmirror.utils.FirebaseUtils.Strings.*;
+import static ai.magicmirror.magicmirror.utils.FirebaseUtils.Database._USERS_TABLE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,7 +58,7 @@ private DatabaseReference myRef;
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         myRef = FirebaseDatabase.getInstance().getReference();
 
-        myRef.child(USERS).child(currentUser.getUid())
+        myRef.child(_USERS_TABLE).child(currentUser.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -92,12 +93,12 @@ private DatabaseReference myRef;
 
             UserDTO user = new UserDTO();
             user.setUserName("Mr7");
-            user.setFaceShape(1);
-            user.setFullProfileImageUrl("default");
-            user.setThumbnailProfileImageUrl("default");
-            user.setFaceColor(1);
+            user.setFaceshape(1);
+            user.setProfileImagefullUrl("default");
+            user.setProfileImageThumbnailUrl("default");
+            user.setFaceComplexion(1);
 
-            myRef.child(USERS)
+            myRef.child(_USERS_TABLE)
                     .child(id)
                     .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

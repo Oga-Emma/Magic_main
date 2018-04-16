@@ -82,7 +82,7 @@ public class FeedPageDiscoverFragment extends Fragment {
 
         return view;
     }
-
+/*
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
@@ -96,7 +96,7 @@ public class FeedPageDiscoverFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
 
 //        setHasOptionsMenu(true);
-    }
+    }*/
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

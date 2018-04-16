@@ -17,11 +17,11 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseUser;
 
 import ai.magicmirror.magicmirror.R;
+import ai.magicmirror.magicmirror.dto.UserDTO;
 import ai.magicmirror.magicmirror.features.feed.FeedPageActivity;
 import ai.magicmirror.magicmirror.features.profile_setup.DreaProfileSetupActivity;
 import ai.magicmirror.magicmirror.features.user_auth.dialogs.LoginVerifyPhoneNumberDialogFragment;
 import ai.magicmirror.magicmirror.models.CountryDTO;
-import ai.magicmirror.magicmirror.models.UserDTO;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -119,7 +119,6 @@ LoginMVP.View, LoginVerifyPhoneNumberDialogFragment.LoginVerifyPhoneNumber{
         LoginVerifyPhoneNumberDialogFragment dialog
                 = LoginVerifyPhoneNumberDialogFragment.getInstance(phoneNumber);
         dialog.setCancelable(false);
-
 
         dialog.setTargetFragment(this, LOGIN_VERIFY_PASSWORD_REQUEST_CODE);
 

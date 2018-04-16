@@ -12,5 +12,7 @@
             <item android:title="Most popular" />
         </menu>
     </item>
-    <item android:title="Logout" />
+    <item
+        android:id="@+id/admin_menu_logout"
+        android:title="Logout" />
 </menu>

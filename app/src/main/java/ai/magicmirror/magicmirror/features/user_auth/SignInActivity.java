@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -15,6 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -33,23 +35,26 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import ai.magicmirror.magicmirror.BaseActivity;
+import ai.magicmirror.magicmirror.features.BaseActivity;
 import ai.magicmirror.magicmirror.R;
+import ai.magicmirror.magicmirror.features.admin.AdminActivity;
 import ai.magicmirror.magicmirror.features.feed.FeedPageActivity;
 import ai.magicmirror.magicmirror.features.profile_setup.DreaProfileSetupActivity;
 import ai.magicmirror.magicmirror.features.user_auth.login.PhoneNumberLoginActivity;
 import ai.magicmirror.magicmirror.utils.InternetUtils;
 import es.dmoral.toasty.Toasty;
 
-import static ai.magicmirror.magicmirror.utils.FirebaseUtils.Strings.USERS;
+import static ai.magicmirror.magicmirror.utils.FirebaseUtils.Database._USERS_TABLE;
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class SigninFullScreenActivity extends BaseActivity {
+public class SignInActivity extends BaseActivity {
 
     private static final int RC_SIGN_IN = 1200;
+    public static final String ACTIVITY_STARTED_FROM_LAUNCHER = "activity_was_started_from_launcher";
     private FirebaseUser currentUser;
     private DatabaseReference myRef;
 
@@ -65,12 +70,15 @@ public class SigninFullScreenActivity extends BaseActivity {
     View decorView;
 
     AlertDialog.Builder errorDialog, googleSigninErrorDialog;
+    private int appLogoClicked;
+
+    MaterialDialog googleSignInErrordialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.signin_fullscreen_activity);
+        setContentView(R.layout.signin_activity);
 //        getSupportActionBar().hide();
 
         decorView = getWindow().getDecorView();
@@ -81,7 +89,15 @@ public class SigninFullScreenActivity extends BaseActivity {
         appLogoImageView = findViewById(R.id.logo_image_view);
         captionImageView = findViewById(R.id.magic_mirror_caption);
 
-
+        appLogoImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if((++appLogoClicked) == 10){
+                    startActivity(new Intent(SignInActivity.this, AdminActivity.class));
+                    finish();
+                }
+            }
+        });
         //[GOOGLE SIGN IN]
         // [START config_signin]
         // Configure Google Sign In
@@ -99,7 +115,7 @@ public class SigninFullScreenActivity extends BaseActivity {
 
         findViewById(R.id.sign_in_with_phone_button)
                 .setOnClickListener( view -> {
-                    startActivity(new Intent(SigninFullScreenActivity.this,
+                    startActivity(new Intent(SignInActivity.this,
                             PhoneNumberLoginActivity.class));
                 });
 
@@ -125,8 +141,6 @@ public class SigninFullScreenActivity extends BaseActivity {
                     }
                 });
 
-
-
         errorDialog = new AlertDialog.Builder(this);
         errorDialog.setMessage("Error connecting to the internet" +
                 "\nPlease check your network connection and try again")
@@ -148,35 +162,49 @@ public class SigninFullScreenActivity extends BaseActivity {
                 .setCancelable(false);
 
 
+        if(getIntent().getBooleanExtra(ACTIVITY_STARTED_FROM_LAUNCHER, true)) {
+
+            Animation fade_in = AnimationUtils.loadAnimation(getApplicationContext(),
+                    R.anim.spalsh_screen_fade_in_animation);
+
+            appLogoImageView.startAnimation(fade_in);
+            captionImageView.startAnimation(fade_in);
+
+            fade_in.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    spinKitView.setVisibility(View.VISIBLE);
+
+                    beginSignInProcess();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+        }else{
+            appLogoImageView.setVisibility(View.VISIBLE);
+            captionImageView.setVisibility(View.VISIBLE);
+            updateUI(null, false);
+        }
 
 
+        String errorMessage = "There was a problem signin with google, please check your internet connection, " +
+                "and make sure atleast one google account" +
+                "is signined in on the phone.\n\n(NB: if problem persists try other signin options)";
 
-        Animation fade_in = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.spalsh_screen_fade_in_animation);
-
-        appLogoImageView.startAnimation(fade_in);
-        captionImageView.startAnimation(fade_in);
-
-        fade_in.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                spinKitView.setVisibility(View.VISIBLE);
-
-                beginSignInProcess();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
-
+        googleSignInErrordialog = new MaterialDialog.Builder(this)
+                .title("Google authentication failed")
+                .content(errorMessage)
+                .negativeText("Close")
+                .show();
 
     }
 
@@ -197,12 +225,11 @@ public class SigninFullScreenActivity extends BaseActivity {
     private void updateUI(FirebaseUser user, boolean Animate) {
         if (user != null) {
             // User is signed in
-//                    Toast.makeText(this, user.getUid() + " signed in", Toast.LENGTH_SHORT).show();
 
             currentUser = FirebaseAuth.getInstance().getCurrentUser();
             myRef = FirebaseDatabase.getInstance().getReference();
 
-            myRef.child(USERS).child(currentUser.getUid())
+            myRef.child(_USERS_TABLE).child(currentUser.getUid())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -210,13 +237,14 @@ public class SigninFullScreenActivity extends BaseActivity {
             /*Toast.makeText(getApplicationContext(), "user already has account",
                     Toast.LENGTH_SHORT).show();*/
 
-                                startActivity(new Intent(SigninFullScreenActivity.this,
+                                startActivity(new Intent(SignInActivity.this,
                                         FeedPageActivity.class));
+                                myRef.keepSynced(true);
 
                                 finish();
 
                             } else {
-                                startActivity(new Intent(SigninFullScreenActivity.this,
+                                startActivity(new Intent(SignInActivity.this,
                                         DreaProfileSetupActivity.class));
                                 finish();
                             }
@@ -232,8 +260,8 @@ public class SigninFullScreenActivity extends BaseActivity {
                     });
 
         } else {
+            spinKitView.setVisibility(View.GONE);
             if(Animate) {
-                spinKitView.setVisibility(View.INVISIBLE);
                 Animation slideIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_animation);
                 slideIn.setDuration(1000);
                 signInButtonLayout.startAnimation(slideIn);
@@ -241,7 +269,6 @@ public class SigninFullScreenActivity extends BaseActivity {
             signInButtonLayout.setVisibility(View.VISIBLE);
         }
     }
-
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -269,14 +296,19 @@ public class SigninFullScreenActivity extends BaseActivity {
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
+
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
-//                Log.w(TAG, "Google sign in failed", e);
+                Log.w("TAG", "Google sign in failed" + e.getMessage(), e);
                 // [START_EXCLUDE]
+
+                googleSignInErrordialog.show();
                 updateUI(null, false);
+                
                 // [END_EXCLUDE]
             }
         }
@@ -304,7 +336,8 @@ public class SigninFullScreenActivity extends BaseActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("TAG", "signInWithCredential:failure", task.getException());
-                            Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+
+                            googleSignInErrordialog.show();
                             updateUI(null, false);
 //                            Toasty.error(getApplicationContext(), "Error signing in, please try again",
 //                                    Toast.LENGTH_LONG).show();

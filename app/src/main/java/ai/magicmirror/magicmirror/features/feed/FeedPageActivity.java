@@ -23,11 +23,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import ai.magicmirror.magicmirror.R;
+import ai.magicmirror.magicmirror.database.UserDB;
+import ai.magicmirror.magicmirror.dto.UserDTO;
+import ai.magicmirror.magicmirror.features.BaseActivity;
 import ai.magicmirror.magicmirror.features.user_profile.UserProfileActivity;
 import es.dmoral.toasty.Toasty;
 
-public class FeedPageActivity extends AppCompatActivity {
+public class FeedPageActivity extends BaseActivity implements UserDB.UserQueryReturn {
 
     private static final long TIME_INTERVAL = 2000;
 
@@ -38,6 +47,7 @@ public class FeedPageActivity extends AppCompatActivity {
     private long mBackPressed;
 
     private ImageView userProfileImageView;
+    private UserDTO user = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +57,7 @@ public class FeedPageActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setElevation(4f);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -63,19 +74,6 @@ public class FeedPageActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
-        userProfileImageView = findViewById(R.id.user_profile_image);
-        userProfileImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(FeedPageActivity.this, UserProfileActivity.class));
-            }
-        });
-
-
-
-
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,15 +82,24 @@ public class FeedPageActivity extends AppCompatActivity {
             }
         });
 
+        userProfileImageView = findViewById(R.id.user_profile_image);
+        userProfileImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent profileIntent = new Intent(FeedPageActivity.this, UserProfileActivity.class);
+                profileIntent.putExtra(UserProfileActivity.USER_INTENT, user);
+                startActivity(profileIntent);
+            }
+        });
+
+        UserDB.getInstance(this).getCurrentUserProfile(this);
+
     }
 
-
-
-
-   /* @Override
+  @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.feed_main_menu, menu);
+        getMenuInflater().inflate(R.menu.feed_menu, menu);
         return true;
     }
 
@@ -109,7 +116,24 @@ public class FeedPageActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }*/
+    }
+
+    /**
+     * CALLED WHEN USER OBJECT IS RETURED FROM FIREBASE
+     * @param user : object returned
+     */
+    @Override
+    public void onUserReturned(UserDTO user) {
+        if(user != null){
+
+            this.user = user;
+            Glide.with(this)
+                    .load(user.getProfileImagefullUrl());
+            Glide.with(this)
+                    .load(user.getProfileImageThumbnailUrl())
+                    .into(userProfileImageView);
+        }
+    }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -138,20 +162,7 @@ public class FeedPageActivity extends AppCompatActivity {
         if(mViewPager.getCurrentItem() != 0){
             mViewPager.setCurrentItem(0, true);
         }else{
-
-            if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis())
-            {
-                super.onBackPressed();
-                return;
-            }
-            else {
-                /*Toast.makeText(getBaseContext(),
-                    "Press back again to exit", Toast.LENGTH_SHORT).show(); */
-
-                Toasty.error(getBaseContext(),
-                        "Press back again to exit.", Toast.LENGTH_SHORT, true).show();
-            }
-            mBackPressed = System.currentTimeMillis();
+            super.onBackPressed();
         }
 
     }

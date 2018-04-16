@@ -20,14 +20,11 @@ public class UserDAO {
 
     private Context context;
 
-    FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
-    private DatabaseReference myRef;
-    private GoogleSignInClient mGoogleSignInClient;
+
 
     public UserDAO(Context context) {
         this.context = context;
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
     }
 
     public static UserDAO getInstance(Context context){
@@ -38,49 +35,5 @@ public class UserDAO {
         return userDAO;
     }
 
-    public void signInWithGoogle(){
-        //[GOOGLE SIGN IN]
-        // [START config_signin]
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(context.getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        // [END config_signin]
 
-        mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
-
-        // [START initialize_auth]
-        mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
-    }
-
-    public void signout(Activity activity){
-        FirebaseAuth.getInstance().signOut();
-
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(context.getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        // [END config_signin]
-
-        GoogleSignInClient mGoogleSignInClient
-                = GoogleSignIn.getClient(context, gso);
-
-        mGoogleSignInClient.signOut().addOnCompleteListener(activity,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                    }
-                });
-
-        // Google revoke access
-        mGoogleSignInClient.revokeAccess().addOnCompleteListener(activity,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                    }
-                });
-    }
 }

@@ -69,7 +69,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedHolder>{
 //                    ((AppCompatActivity) context).getSupportFragmentManager()
 //                    .beginTransaction()
 //                    .add();
-            SwapFragment dialog = new SwapFragment();
+//            SwapFragment dialog = new SwapFragment();
         }
     }
 }
