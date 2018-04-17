@@ -54,7 +54,7 @@ import id.zelory.compressor.Compressor;
 
 public class DreaProfileSetupActivity extends AppCompatActivity
         implements FaceShapeAdapter.OnFaceShapeSelected,
-        ComplexionAdapter.OnComlexionSelected, View.OnClickListener{
+        ComplexionAdapter.OnComlexionSelected, View.OnClickListener, UserDB.UserSignout{
 
     private static final int PICK_IMAGE_ID = 200;
     private static final String FADE_IN_ANIMATION = "fade_in";
@@ -240,13 +240,7 @@ public class DreaProfileSetupActivity extends AppCompatActivity
 //                finish();
             }else{
 
-                UserDB.getInstance(this).signout(this);
-
-                Intent intent = new Intent(this, SignInActivity.class);
-                intent.putExtra(SignInActivity.ACTIVITY_STARTED_FROM_LAUNCHER, false);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+                UserDB.getInstance(this).signout(this, this);
             }
         }
     }
@@ -467,4 +461,18 @@ public class DreaProfileSetupActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onSignoutSuccess() {
+
+        Intent intent = new Intent(this, SignInActivity.class);
+        intent.putExtra(SignInActivity.ACTIVITY_STARTED_FROM_LAUNCHER, false);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onSignoutFailed() {
+        Toasty.error(this, "Signout failed", Toast.LENGTH_SHORT).show();
+    }
 }

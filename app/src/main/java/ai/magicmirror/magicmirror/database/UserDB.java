@@ -2,14 +2,13 @@ package ai.magicmirror.magicmirror.database;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,19 +20,14 @@ import com.google.firebase.database.ValueEventListener;
 
 import ai.magicmirror.magicmirror.R;
 import ai.magicmirror.magicmirror.dto.UserDTO;
-import ai.magicmirror.magicmirror.features.feed.FeedPageActivity;
-import ai.magicmirror.magicmirror.features.profile_setup.DreaProfileSetupActivity;
-import ai.magicmirror.magicmirror.features.user_auth.SignInActivity;
-import ai.magicmirror.magicmirror.features.user_auth.UserDAO;
-import es.dmoral.toasty.Toasty;
 
 import static ai.magicmirror.magicmirror.utils.FirebaseUtils.Database._USERS_TABLE;
 
 public class UserDB {
     private static UserDB userDB;
-    private final FirebaseUser currentUser;
-    private final DatabaseReference myRef;
-    private final FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+    private DatabaseReference myRef;
+    private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private Context context;
 
@@ -48,17 +42,15 @@ public class UserDB {
     public UserDB(Context context) {
         this.context = context;
 
-
-        // [START initialize_auth]
-
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        myRef = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        myRef = FirebaseDatabase.getInstance().getReference();
 
-        // [END initialize_auth]
     }
 
-    public void getCurrentUserProfile(UserQueryReturn userQueryReturn){
+    public void getCurrentUserProfile(GetUser GetUser){
+
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if(null != currentUser){
 
@@ -67,39 +59,34 @@ public class UserDB {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if(dataSnapshot.exists()){
-
-//                                Toasty.normal(context, "Data exists", Toast.LENGTH_LONG).show();
-                                userQueryReturn.onUserReturned(dataSnapshot.getValue(UserDTO.class));
+                                GetUser.onUserReturnedUser(dataSnapshot.getValue(UserDTO.class));
 
                             }else{
-                                userQueryReturn.onUserReturned(null);
+                                GetUser.onUserReturnedUser(null);
                             }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            userQueryReturn.onUserReturned(null);
+                            GetUser.onUserReturnedUser(null);
                         }
                     });
+        }else{
+            GetUser.onNoUserRegistered();
         }
 
     }
 
     public void signInWithGoogle(){
-        //[GOOGLE SIGN IN]
-        // [START config_signin]
-        // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        // [END config_signin]
-
         mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
 
     }
 
-    public void signout(Activity activity){
+    public void signout(Activity activity, UserSignout userSignout){
         FirebaseAuth.getInstance().signOut();
 
 
@@ -107,8 +94,6 @@ public class UserDB {
                 .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        // [END config_signin]
-
         mGoogleSignInClient
                 = GoogleSignIn.getClient(context, gso);
 
@@ -116,19 +101,27 @@ public class UserDB {
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
+                        // Google revoke access
+                        mGoogleSignInClient.revokeAccess();
+                        userSignout.onSignoutSuccess();
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                userSignout.onSignoutFailed();
+            }
+        });
 
-        // Google revoke access
-        mGoogleSignInClient.revokeAccess().addOnCompleteListener(activity,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                    }
-                });
+
     }
 
-    public interface UserQueryReturn{
-        void onUserReturned(UserDTO user);
+    public interface UserSignout {
+        void onSignoutSuccess();
+        void onSignoutFailed();
+    }
+
+    public interface GetUser {
+        void onUserReturnedUser(UserDTO user);
+        void onNoUserRegistered();
     }
 }

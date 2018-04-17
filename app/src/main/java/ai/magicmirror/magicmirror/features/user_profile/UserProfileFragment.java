@@ -13,9 +13,10 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 
 import ai.magicmirror.magicmirror.R;
+import ai.magicmirror.magicmirror.database.UserDB;
 import ai.magicmirror.magicmirror.dto.UserDTO;
 
-public class UserProfileFragment extends Fragment {
+public class UserProfileFragment extends Fragment{
 
     private static final String USER_BUNDLE_KEY = "user_bundle_key";
     private UserDTO user = null;
@@ -65,4 +66,5 @@ public class UserProfileFragment extends Fragment {
 
         outState.putParcelable(USER_BUNDLE_KEY, user);
     }
+
 }

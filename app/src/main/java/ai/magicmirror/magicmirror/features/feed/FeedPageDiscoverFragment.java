@@ -69,7 +69,6 @@ public class FeedPageDiscoverFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        toolbar.setTitle("Discover");
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
 

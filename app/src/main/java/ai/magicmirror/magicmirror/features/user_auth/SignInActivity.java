@@ -55,6 +55,7 @@ public class SignInActivity extends BaseActivity {
 
     private static final int RC_SIGN_IN = 1200;
     public static final String ACTIVITY_STARTED_FROM_LAUNCHER = "activity_was_started_from_launcher";
+    private static final String TAG = SignInActivity.class.getSimpleName();
     private FirebaseUser currentUser;
     private DatabaseReference myRef;
 
@@ -72,7 +73,7 @@ public class SignInActivity extends BaseActivity {
     AlertDialog.Builder errorDialog, googleSigninErrorDialog;
     private int appLogoClicked;
 
-    MaterialDialog googleSignInErrordialog;
+    MaterialDialog.Builder googleSignInErrordialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +151,7 @@ public class SignInActivity extends BaseActivity {
                         spinKitView.setVisibility(View.VISIBLE);
                         dialogInterface.dismiss();
 
-                        beginSignInProcess();
+                        //network check
                     }
                 })
                 .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
@@ -180,7 +181,7 @@ public class SignInActivity extends BaseActivity {
                 public void onAnimationEnd(Animation animation) {
                     spinKitView.setVisibility(View.VISIBLE);
 
-                    beginSignInProcess();
+                    updateUI(true);
                 }
 
                 @Override
@@ -192,7 +193,7 @@ public class SignInActivity extends BaseActivity {
         }else{
             appLogoImageView.setVisibility(View.VISIBLE);
             captionImageView.setVisibility(View.VISIBLE);
-            updateUI(null, false);
+            updateUI(false);
         }
 
 
@@ -203,71 +204,20 @@ public class SignInActivity extends BaseActivity {
         googleSignInErrordialog = new MaterialDialog.Builder(this)
                 .title("Google authentication failed")
                 .content(errorMessage)
-                .negativeText("Close")
-                .show();
+                .negativeText("Close");
 
     }
 
-    private void beginSignInProcess() {
-        if (!InternetUtils.isConnected(getApplicationContext())) {
+
+    private void updateUI(boolean animate) {
+
             spinKitView.setVisibility(View.GONE);
-            errorDialog.show();
-
-        } else {
-
-            FirebaseUser user = mAuth.getCurrentUser();
-            updateUI(user, true);
-
-        }
-
-    }
-
-    private void updateUI(FirebaseUser user, boolean Animate) {
-        if (user != null) {
-            // User is signed in
-
-            currentUser = FirebaseAuth.getInstance().getCurrentUser();
-            myRef = FirebaseDatabase.getInstance().getReference();
-
-            myRef.child(_USERS_TABLE).child(currentUser.getUid())
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-            /*Toast.makeText(getApplicationContext(), "user already has account",
-                    Toast.LENGTH_SHORT).show();*/
-
-                                startActivity(new Intent(SignInActivity.this,
-                                        FeedPageActivity.class));
-                                myRef.keepSynced(true);
-
-                                finish();
-
-                            } else {
-                                startActivity(new Intent(SignInActivity.this,
-                                        DreaProfileSetupActivity.class));
-                                finish();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-//                                    Toast.makeText(getApplicationContext(), "error " +
-//                                                    databaseError.getMessage(),
-//                                            Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
-
-        } else {
-            spinKitView.setVisibility(View.GONE);
-            if(Animate) {
+            if(animate) {
                 Animation slideIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_animation);
                 slideIn.setDuration(1000);
                 signInButtonLayout.startAnimation(slideIn);
             }
             signInButtonLayout.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -297,31 +247,21 @@ public class SignInActivity extends BaseActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
 
-                // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
 
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
                 Log.w("TAG", "Google sign in failed" + e.getMessage(), e);
-                // [START_EXCLUDE]
 
                 googleSignInErrordialog.show();
-                updateUI(null, false);
-                
-                // [END_EXCLUDE]
+                updateUI(false);
+
             }
         }
     }
-    // [END onactivityresult]
-
 
     // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-//        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        // [START_EXCLUDE silent]
-//        showProgressDialog();
-        // [END_EXCLUDE]
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -329,23 +269,16 @@ public class SignInActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-//                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user, false);
+                            Log.i(TAG, "Google signin success");
+                            startActivity(new Intent(SignInActivity.this, FeedPageActivity.class));
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w("TAG", "signInWithCredential:failure", task.getException());
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
 
                             googleSignInErrordialog.show();
-                            updateUI(null, false);
-//                            Toasty.error(getApplicationContext(), "Error signing in, please try again",
-//                                    Toast.LENGTH_LONG).show();
+                            updateUI(false);
                         }
 
-                        // [START_EXCLUDE]
-//                        hideProgressDialog();
-                        // [END_EXCLUDE]
                     }
                 });
     }
