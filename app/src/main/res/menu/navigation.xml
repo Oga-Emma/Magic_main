@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item
-        android:id="@+id/navigation_users"
-        android:icon="@drawable/ic_users"
-        android:title="Users" />
-
     <item
         android:id="@+id/navigation_uploaded_photos"
-        android:icon="@drawable/ic_uploaded_photos"
-        android:title="Uploads" />
+        android:icon="@drawable/ic_list_grid"
+        android:title="Grid" />
 
     <item
         android:id="@+id/navigation_swaps"
-        android:icon="@drawable/ic_switch_face"
-        android:title="Swaps" />
+        android:icon="@drawable/ic_view_list"
+        android:title="List" />
 
 </menu>

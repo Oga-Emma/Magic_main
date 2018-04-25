@@ -5,6 +5,6 @@
     android:id="@+id/profile_setup_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.profile_setup.ProfileSetupActivity">
+    tools:context=".FEATURES.profile_setup.ProfileSetupActivity">
 
 </FrameLayout>

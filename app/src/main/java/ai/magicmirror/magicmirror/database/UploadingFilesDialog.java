@@ -1,18 +1,15 @@
 package ai.magicmirror.magicmirror.database;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
 
 import ai.magicmirror.magicmirror.R;
-import ai.magicmirror.magicmirror.features.admin.AdminUploadsFragment;
-import ai.magicmirror.magicmirror.features.admin.UploadImageActivity;
+import ai.magicmirror.magicmirror.FEATURES.admin.AdminUploadsFragment;
 
 public class UploadingFilesDialog extends DialogFragment
 implements AdminUploadsFragment.OnFileUploaded {

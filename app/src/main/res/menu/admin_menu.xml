@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Sort by" >
+    <item
+        android:id="@+id/admin_sort_users"
+        android:title="Sort users by">
+        <menu>
+            <item android:title="Date registered">
+                <menu>
+                    <item android:title="Ascending" />
+                    <item android:title="Descending" />
+                </menu>
+            </item>
+            <item android:title="Swap count">
+                <menu>
+                    <item android:title="Ascending" />
+                    <item android:title="Descending" />
+                </menu>
+            </item>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/admin_upload_image"
+        android:title="Upload models" />
+    <item android:title="Sort models by" android:id="@+id/admin_sort_by">
         <menu >
-            <item android:title="Upload date">
+            <item android:title="Upload date" >
                 <menu>
                     <item android:title="Ascending" />
                     <item android:title="Descending" />

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/splash_screen_color"
     android:fillViewport="true"
-    tools:context=".features.profile_setup.DreaProfileSetupActivity">
+    tools:context=".FEATURES.profile_setup.DreaProfileSetupActivity">
 
     <Button
         android:id="@+id/logout_done_button"

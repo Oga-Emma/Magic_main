@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "259978237624-v9vjblpo83qci1602iu60j6f5e75pmsg.apps.googleusercontent.com",
+          "client_id": "259978237624-qjdpot3fhuser9mh0f9et34tvfmlv80p.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "ai.magicmirror.magicmirror",
-            "certificate_hash": "8e83a1200da270716667b8f1be74dc224e3a972c"
+            "certificate_hash": "56a079c598dd5111cd7e51ec278e8741aa9e413f"
           }
         },
         {

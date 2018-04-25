@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".features.feed.FeedPageActivity">
+    tools:context=".FEATURES.feed.FeedPageActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -35,12 +35,13 @@
                     android:layout_gravity="center_horizontal|left|start"
                     android:background="?selectableItemBackground"
                     android:clickable="true"
+                    android:transitionName="profile"
                     android:cropToPadding="false"
-                    android:src="@drawable/ic_person"
                     app:civ_border_overlay="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="UnusedAttribute" />
 
                 <TextView
                     android:id="@+id/textView23"
@@ -100,5 +101,8 @@
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/colorPrimary"
         app:srcCompat="@drawable/ic_camera" />
+
+
+    <!--app:layout_behavior="ai.magicmirror.magicmirror.ScrollAwareFABBehavior"-->
 
 </android.support.design.widget.CoordinatorLayout>

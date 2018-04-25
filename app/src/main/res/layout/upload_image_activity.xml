@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.admin.UploadImageActivity">
+    tools:context=".FEATURES.admin.UploadImageActivity">
 
     <Button
         android:id="@+id/select_image_to_upload_button"

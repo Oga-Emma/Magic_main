@@ -18,8 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import ai.magicmirror.magicmirror.FEATURES.profile_setup.profileSetup.ProfileSetupActivity;
 import ai.magicmirror.magicmirror.R;
-import ai.magicmirror.magicmirror.dto.UserDTO;
+import ai.magicmirror.magicmirror.DTO.UserDTO;
 
 import static ai.magicmirror.magicmirror.utils.FirebaseUtils.Database._USERS_TABLE;
 
@@ -48,7 +49,8 @@ public class UserDB {
 
     }
 
-    public void getCurrentUserProfile(GetUser GetUser){
+
+    public void getCurrentUserProfile(GetUser getUser){
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -59,23 +61,68 @@ public class UserDB {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if(dataSnapshot.exists()){
-                                GetUser.onUserReturnedUser(dataSnapshot.getValue(UserDTO.class));
+                                UserDTO user = dataSnapshot.getValue(UserDTO.class);
+
+                                if(null != user)
+                                    getUser.onUserReturnedUser(user);
+                                else{
+
+                                    getUser.onNoUserRegistered();
+                                }
 
                             }else{
-                                GetUser.onUserReturnedUser(null);
+                                getUser.onNoUserRegistered();
                             }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            GetUser.onUserReturnedUser(null);
+                            getUser.onNoUserRegistered();
                         }
                     });
         }else{
-            GetUser.onNoUserRegistered();
+            getUser.onNoUserRegistered();
         }
 
     }
+
+
+    public void geUserAfterSigninProfile(GetUserAfterSignIn getUser){
+
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(null != currentUser){
+
+            myRef.child(_USERS_TABLE).child(currentUser.getUid())
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                UserDTO user = dataSnapshot.getValue(UserDTO.class);
+
+                                if(null != user)
+                                    getUser.onUserAlreadyRegister(user);
+                                else{
+
+                                    getUser.onUserNotRegister();
+                                }
+
+                            }else{
+                                getUser.onUserNotRegister();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            getUser.onUserNotRegister();
+                        }
+                    });
+        }else{
+            getUser.onUserRetrieveError();
+        }
+
+    }
+
 
     public void signInWithGoogle(){
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -87,7 +134,7 @@ public class UserDB {
     }
 
     public void signout(Activity activity, UserSignout userSignout){
-        FirebaseAuth.getInstance().signOut();
+        mAuth.signOut();
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -111,8 +158,38 @@ public class UserDB {
                 userSignout.onSignoutFailed();
             }
         });
+    }
+
+    public void signout(Activity activity){
+        FirebaseAuth.getInstance().signOut();
 
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(context.getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient
+                = GoogleSignIn.getClient(context, gso);
+
+        mGoogleSignInClient.signOut().addOnCompleteListener(activity,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // Google revoke access
+                        mGoogleSignInClient.revokeAccess();
+                    }
+                });
+    }
+
+    public void deleteUser(Context context) {
+        mAuth.signOut();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(context.getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        GoogleSignIn.getClient(context, gso).signOut();
+        currentUser.delete();
     }
 
     public interface UserSignout {
@@ -123,5 +200,11 @@ public class UserDB {
     public interface GetUser {
         void onUserReturnedUser(UserDTO user);
         void onNoUserRegistered();
+    }
+
+    public interface GetUserAfterSignIn{
+        void onUserAlreadyRegister(UserDTO user);
+        void onUserNotRegister();
+        void onUserRetrieveError();
     }
 }

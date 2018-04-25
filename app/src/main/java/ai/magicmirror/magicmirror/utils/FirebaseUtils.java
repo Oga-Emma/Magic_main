@@ -9,6 +9,7 @@ public class FirebaseUtils {
     public static final String ORIGINAL_IMAGE_LOCATON = "original_images";
     public static final String USER_PROFILE_IMAGE__FULL_IMAGE_LOCATON = "user_profile_image/full_image";
     public static final String USER_PROFILE_IMAGE__THUMBNAIL_LOCATON = "user_profile_image/thumnail";
+    public static final String IMAGE_LIKES_LOCATION = "image_likes";
 
     public static class Database{
         public static final String _USERS_TABLE = "users";

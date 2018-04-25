@@ -38,6 +38,10 @@
     <string name="title_notifications">Notifications</string>
     <string name="uploaded_image_counter">%1$d/%2$d</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="sign_in_activity_google_sign_in_button_label">Sign in with Google</string>
+    <string name="sign_in_activity_sign_in_with_phone_number_button_label">Sign in with Phone number</string>
+    <string name="sign_in_activity_by_signing_in_i_accept_magicmirror_ai_text_view_label">By signing in, I accept MagicMirror.ai</string>
+    <string name="sing_in_activity_terms_of_service_and_privacy_policy_button_label">Terms of service and privacy policy</string>
     <!--<string name="uploaded_image_percent">%1$d\%</string>-->
 
 
