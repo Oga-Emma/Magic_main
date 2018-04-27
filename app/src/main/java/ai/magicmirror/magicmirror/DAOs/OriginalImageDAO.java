@@ -79,7 +79,7 @@ public class OriginalImageDAO {
 
                                         if(null != imageDTO){
                                                 imageDTOList.add(imageDTO);
-                                                Log.i(TAG, imageDTO.toString());
+//                                                Log.i(TAG, imageDTO.toString());
                                             }
                                     }
                                 }

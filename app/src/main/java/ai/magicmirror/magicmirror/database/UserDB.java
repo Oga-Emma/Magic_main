@@ -67,17 +67,17 @@ public class UserDB {
                                     getUser.onUserReturnedUser(user);
                                 else{
 
-                                    getUser.onNoUserRegistered();
+                                    getUser.onUserReturnedUser(null);
                                 }
 
                             }else{
-                                getUser.onNoUserRegistered();
+                                getUser.onUserReturnedUser(null);
                             }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            getUser.onNoUserRegistered();
+                            getUser.onUserReturnedUser(null);
                         }
                     });
         }else{

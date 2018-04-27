@@ -8,43 +8,13 @@
         <menu>
 
             <item
-                android:id="@+id/action_sort"
-                android:title="Sort feed by"
-                app:showAsAction="never">
-
-                <menu>
-                    <item
-                        android:id="@+id/action_sortby_most_recent"
-                        android:title="Most recent"
-                        app:showAsAction="never" />
-
-                    <item
-                        android:id="@+id/action_sortby_most_swapped"
-                        android:title="Most popular"
-                        app:showAsAction="never" />
-
-                </menu>
-
-            </item>
-
+                android:id="@+id/action_view_small_thumbnail"
+                android:title="Small thumbnail"
+                app:showAsAction="never" />
             <item
-                android:id="@+id/action_view"
-                android:title="Image size"
-                app:showAsAction="never">
-
-                <menu>
-                    <item
-                        android:id="@+id/action_view_small_thumbnail"
-                        android:title="Small thumbnail"
-                        app:showAsAction="never" />
-                    <item
-                        android:id="@+id/action_view_medium_thumbnail"
-                        android:title="Medium thumbnail"
-                        app:showAsAction="never" />
-
-                </menu>
-
-            </item>
+                android:id="@+id/action_view_medium_thumbnail"
+                android:title="Medium thumbnail"
+                app:showAsAction="never" />
 
         </menu>
     </item>

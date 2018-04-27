@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -102,7 +103,8 @@ Interface.SetUsernameAndSelfieImage{
                             .addToBackStack("FACE SHAPE")
                             .commit();
 
-                    radioButton2.setSelected(true);
+                    radioButton2.setChecked(true);
+//                    ((RadioGroup)findViewById(R.id.radioGroup)).check(radioButton2.getId());
                     nextBtn.setText("Finish");
                 }else{
                     if(TextUtils.isEmpty(username))
@@ -202,7 +204,9 @@ Interface.SetUsernameAndSelfieImage{
         if(getSupportFragmentManager().getBackStackEntryCount() > 0){
             getSupportFragmentManager().popBackStack();
             nextBtn.setText("Next");
-            radioButton1.setSelected(true);
+            radioButton1.setChecked(true);
+
+//            ((RadioGroup)findViewById(R.id.radioGroup)).check(radioButton1.getId());
         }else{
             UserDB.getInstance(this).deleteUser(this);
 
