@@ -40,12 +40,14 @@ import ai.magicmirror.magicmirror.dto.UserDTO;
 import ai.magicmirror.magicmirror.features.user_auth.SignInActivity;
 import ai.magicmirror.magicmirror.utils.FirebaseUtils;
 import ai.magicmirror.magicmirror.utils.ImagePickerUtils;
+import ai.magicmirror.magicmirror.utils.NetworkUtils;
 import es.dmoral.toasty.Toasty;
 import id.zelory.compressor.Compressor;
 
 import static ai.magicmirror.magicmirror.utils.ConstantsUtils.Integers.PICK_IMAGE_ID;
 
-public class UserProfileActivity extends AppCompatActivity implements UserDB.UserSignout, View.OnClickListener {
+public class UserProfileActivity extends AppCompatActivity
+        implements UserDB.UserSignout, View.OnClickListener {
 
     public static final String USER_INTENT = "user_intent";
     private static final String TAG = UserProfileActivity.class.getSimpleName();
@@ -79,31 +81,36 @@ public class UserProfileActivity extends AppCompatActivity implements UserDB.Use
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.user_profile_activity_toolbar); // Attaching the layout to the toolbar object
 //        setSupportActionBar(toolbar);
 
-        // enabling action bar app icon and behaving it as toggle button
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setElevation(0f);
-        getSupportActionBar().setTitle("Magic profile");
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            Toasty.warning(this, "No internet connection", Toast.LENGTH_LONG).show();
+            finish();
+        } else {
+            // enabling action bar app icon and behaving it as toggle button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setElevation(0f);
+            getSupportActionBar().setTitle("Magic profile");
 
-        if (savedInstanceState != null) {
-            user = savedInstanceState.getParcelable(USER_INTENT);
-        } else if (getIntent() != null) {
-            user = getIntent().getParcelableExtra(USER_INTENT);
+            if (savedInstanceState != null) {
+                user = savedInstanceState.getParcelable(USER_INTENT);
+            } else if (getIntent() != null) {
+                user = getIntent().getParcelableExtra(USER_INTENT);
+            }
+
+            settingImageDialog = new ProgressDialog(this);
+            settingImageDialog.setMessage("Setting profile picture, please wait...");
+
+            profileImageView = findViewById(R.id.profile_setup_profile_image_image_view);
+            findViewById(R.id.change_picture_image_view).setOnClickListener(this::onClick);
+
+            Glide.with(this)
+                    .load(user.getProfileImagefullUrl())
+                    .apply(new RequestOptions()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL))
+                    .into(profileImageView);
+
+            ((TextView) findViewById(R.id.username_text_view)).setText(user.getUserName());
         }
-
-        settingImageDialog = new ProgressDialog(this);
-        settingImageDialog.setMessage("Setting profile picture, please wait...");
-
-        profileImageView = findViewById(R.id.profile_setup_profile_image_image_view);
-        findViewById(R.id.change_picture_image_view).setOnClickListener(this::onClick);
-
-        Glide.with(this)
-                .load(user.getProfileImagefullUrl())
-                .apply(new RequestOptions()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL))
-                .into(profileImageView);
-
-        ((TextView) findViewById(R.id.username_text_view)).setText(user.getUserName());
 
     }
 

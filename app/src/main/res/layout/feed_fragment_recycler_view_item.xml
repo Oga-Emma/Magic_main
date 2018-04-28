@@ -24,7 +24,7 @@
         <ImageView
             android:id="@+id/feed_image_view"
             android:layout_width="match_parent"
-            android:layout_height="320dp"
+            android:layout_height="400dp"
             android:scaleType="centerCrop"
             android:transitionName="preview_image"
             app:layout_constraintEnd_toEndOf="parent"

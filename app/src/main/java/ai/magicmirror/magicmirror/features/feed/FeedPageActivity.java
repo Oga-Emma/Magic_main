@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +22,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.chootdev.csnackbar.Align;
+import com.chootdev.csnackbar.Duration;
+import com.chootdev.csnackbar.Snackbar;
+import com.chootdev.csnackbar.Type;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -30,11 +33,12 @@ import ai.magicmirror.magicmirror.GlideApp;
 import ai.magicmirror.magicmirror.R;
 import ai.magicmirror.magicmirror.database.UserDB;
 import ai.magicmirror.magicmirror.dto.UserDTO;
+import ai.magicmirror.magicmirror.features.BaseActivity;
 import ai.magicmirror.magicmirror.features.swap.SwapActivity;
 import ai.magicmirror.magicmirror.features.user_auth.SignInActivity;
 import ai.magicmirror.magicmirror.features.user_profile.UserProfileActivity;
 
-public class FeedPageActivity extends AppCompatActivity
+public class FeedPageActivity extends BaseActivity
         implements UserDB.GetUser, UserProfileActivity.OnProfilePictureChanged,
         FeedInterfaces.OnScrollChanged, View.OnClickListener {
 
@@ -50,6 +54,8 @@ public class FeedPageActivity extends AppCompatActivity
     private FeedPageDiscoverFragment discoverFragment;
     private FeedPageFeedFragment feedFragment;
 
+    private Snackbar noNetworkErrorSnackbar;
+
     private SharedPreferences pref;
     private SharedPreferences.Editor prefEditor;
     private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener =
@@ -58,15 +64,19 @@ public class FeedPageActivity extends AppCompatActivity
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                     switch (key) {
                         case FeedPageDiscoverFragment.THUMBNAIL_SHARED_PREFERENCE_KEY:
+                            if (discoverFragment != null) ;
                             discoverFragment.thumbnailSizeChanged();
                             break;
 
                         case FeedPageFeedFragment.SORTBY_PREF_KEY:
+                            if (feedFragment != null) ;
                             feedFragment.sortTypeChanged();
                             break;
                     }
                 }
             };
+
+    private boolean noNetwork = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +116,12 @@ public class FeedPageActivity extends AppCompatActivity
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         prefEditor = pref.edit();
 
+        noNetworkErrorSnackbar = Snackbar.with(this, null)
+                .type(Type.ERROR)
+                .message("No internet connection")
+                .duration(Duration.INFINITE)
+                .fillParent(true)
+                .textAlign(Align.CENTER);
 
     }
 
@@ -268,6 +284,27 @@ public class FeedPageActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         pref.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
+    }
+
+    @Override
+    public void networkAvailable() {
+        super.networkAvailable();
+
+        if (noNetwork) {
+            if (noNetworkErrorSnackbar != null)
+                Snackbar.dismiss();
+//
+//            finish();
+//            startActivity(getIntent());
+        }
+    }
+
+    @Override
+    public void networkUnavailable() {
+        super.networkUnavailable();
+
+        Snackbar.show();
+        noNetwork = true;
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

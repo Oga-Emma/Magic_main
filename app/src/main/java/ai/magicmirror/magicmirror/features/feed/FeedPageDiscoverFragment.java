@@ -170,11 +170,14 @@ public class FeedPageDiscoverFragment extends Fragment implements OriginalImageD
     }
 
     public void thumbnailSizeChanged() {
-        gridLayoutManager = new GridLayoutManager(getContext(),
-                PreferenceManager.getDefaultSharedPreferences(getContext())
-                        .getInt(THUMBNAIL_SHARED_PREFERENCE_KEY, 2));
-        discoverRecyclerView.setLayoutManager(gridLayoutManager);
-        discoverRecyclerView.setAdapter(new DiscoverAdapter(imageDTOList));
+
+        if (imageDTOList != null && !imageDTOList.isEmpty()) {
+            gridLayoutManager = new GridLayoutManager(getContext(),
+                    PreferenceManager.getDefaultSharedPreferences(getContext())
+                            .getInt(THUMBNAIL_SHARED_PREFERENCE_KEY, 2));
+            discoverRecyclerView.setLayoutManager(gridLayoutManager);
+            discoverRecyclerView.setAdapter(new DiscoverAdapter(imageDTOList));
+        }
     }
 
 }

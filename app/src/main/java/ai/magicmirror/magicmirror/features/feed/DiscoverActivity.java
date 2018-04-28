@@ -21,6 +21,7 @@ import java.util.List;
 import ai.magicmirror.magicmirror.R;
 import ai.magicmirror.magicmirror.dao.OriginalImageDAO;
 import ai.magicmirror.magicmirror.dto.OriginalImageDTO;
+import ai.magicmirror.magicmirror.utils.NetworkUtils;
 import es.dmoral.toasty.Toasty;
 
 import static ai.magicmirror.magicmirror.features.feed.FeedPageDiscoverFragment.THUMBNAIL_SHARED_PREFERENCE_KEY;
@@ -55,6 +56,10 @@ public class DiscoverActivity extends AppCompatActivity implements View.OnClickL
         toolbar.findViewById(R.id.back_image_view).setOnClickListener(this);
         toolbar.findViewById(R.id.search_image_view).setOnClickListener(this);
 
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            Toasty.warning(this, "No internet connection", Toast.LENGTH_LONG).show();
+            finish();
+        }
         String[] hairSearchHint = {GELE, WEAVING, WEAVON, BRAID, ATTACHMENT, HAIRCUT, NATURAL};
 
         editText = toolbar.findViewById(R.id.discover_autoCompleteTextView);

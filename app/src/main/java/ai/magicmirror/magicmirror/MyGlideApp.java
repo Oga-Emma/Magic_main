@@ -1,4 +1,4 @@
-package ai.magicmirror.magicmirror.app;
+package ai.magicmirror.magicmirror;
 
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;

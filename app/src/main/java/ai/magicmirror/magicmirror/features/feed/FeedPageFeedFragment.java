@@ -148,23 +148,27 @@ public class FeedPageFeedFragment extends Fragment implements OriginalImageDAO.O
     }
 
     public void sortTypeChanged() {
-        switch (PreferenceManager.getDefaultSharedPreferences(getContext())
-                .getInt(SORTBY_PREF_KEY, SORTBY_SWAPS)) {
 
-            case SORTBY_SWAPS:
-                Collections.shuffle(images);
-                adapter.notifyDataSetChanged();
-                break;
 
-            case SORTYBY_UPLOADDATE:
-                Collections.shuffle(images);
-                adapter.notifyDataSetChanged();
-                break;
+        if (images != null && !images.isEmpty()) {
+            switch (PreferenceManager.getDefaultSharedPreferences(getContext())
+                    .getInt(SORTBY_PREF_KEY, SORTBY_SWAPS)) {
 
-            case SORTBY_LIKES:
-                Collections.shuffle(images);
-                adapter.notifyDataSetChanged();
-                break;
+                case SORTBY_SWAPS:
+                    Collections.shuffle(images);
+                    adapter.notifyDataSetChanged();
+                    break;
+
+                case SORTYBY_UPLOADDATE:
+                    Collections.shuffle(images);
+                    adapter.notifyDataSetChanged();
+                    break;
+
+                case SORTBY_LIKES:
+                    Collections.shuffle(images);
+                    adapter.notifyDataSetChanged();
+                    break;
+            }
         }
     }
 

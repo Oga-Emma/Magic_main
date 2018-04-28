@@ -12,7 +12,8 @@ import ai.magicmirror.magicmirror.R;
 import ai.magicmirror.magicmirror.broadcast_receivers.NetworkStateReceiver;
 import es.dmoral.toasty.Toasty;
 
-public class BaseActivity extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener {
+public class BaseActivity extends AppCompatActivity implements
+        NetworkStateReceiver.NetworkStateReceiverListener {
 
     private static final long TIME_INTERVAL = 2000;
     public boolean networkIsAvailabe;

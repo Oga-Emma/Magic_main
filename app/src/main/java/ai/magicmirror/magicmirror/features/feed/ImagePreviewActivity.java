@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.ChangeBounds;
 import android.transition.Transition;
@@ -38,16 +37,16 @@ public class ImagePreviewActivity extends AppCompatActivity implements View.OnCl
         profileIntent.putExtra(ImagePreviewActivity.IMAGE_INTENT, imageDTO);
 // Pass data object in the bundle and populate details activity.
 
-//        context.startActivity(profileIntent);
+        context.startActivity(profileIntent);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             ActivityOptionsCompat options = ActivityOptionsCompat.
                     makeSceneTransitionAnimation(context,
                             imageView, "preview_image");
             context.startActivity(profileIntent, options.toBundle());
         } else {
             context.startActivity(profileIntent);
-        }
+        }*/
     }
 
 
