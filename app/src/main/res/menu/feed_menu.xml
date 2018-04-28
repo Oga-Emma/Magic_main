@@ -3,6 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ai.magicmirror.magicmirror.FEATURES.feed.FeedPageActivity">
 
+
+    <item android:id="@+id/feed_menu_action_sort" android:title="Sort by">
+
+        <menu>
+
+            <item
+                android:id="@+id/action_sortby_swaps"
+                android:title="Number of swaps"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_sortby_most_recent_upload"
+                android:title="Most recent uploads"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/action_sortby_likes"
+                android:title="Number of likes"
+                app:showAsAction="never" />
+
+        </menu>
+    </item>
+
     <item android:id="@+id/feed_menu_action_view" android:title="Display">
 
         <menu>
@@ -20,13 +43,18 @@
     </item>
 
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+        android:id="@+id/action_help"
+        android:title="Help"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_about"
         android:title="About"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_exit"
+        android:title="Exit"
         app:showAsAction="never" />
 
 </menu>
