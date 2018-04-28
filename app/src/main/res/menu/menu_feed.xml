@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ai.magicmirror.magicmirror.FEATURES.feeds.FeedActivity">
+    tools:context="ai.magicmirror.magicmirror.features.feeds.FeedActivity">
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

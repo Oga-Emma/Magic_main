@@ -7,7 +7,7 @@
     android:background="@color/colorPrimaryDark"
     android:padding="4dp"
     app:layout_anchorGravity="center"
-    tools:context=".FEATURES.profile_setup.profileSetup.ProfileSetupActivity">
+    tools:context=".features.profile_setup.profileSetup.ProfileSetupActivity">
 
     <FrameLayout
         android:id="@+id/frameLayout4"

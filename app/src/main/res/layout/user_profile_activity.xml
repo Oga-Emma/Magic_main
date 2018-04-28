@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ai.magicmirror.magicmirror.FEATURES.user_profile.UserProfileActivity"
+    tools:context="ai.magicmirror.magicmirror.features.user_profile.UserProfileActivity"
     tools:layout_editor_absoluteY="81dp">
 
     <android.support.constraint.Guideline

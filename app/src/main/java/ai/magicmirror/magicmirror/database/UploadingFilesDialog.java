@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import ai.magicmirror.magicmirror.R;
-import ai.magicmirror.magicmirror.FEATURES.admin.AdminUploadsFragment;
+import ai.magicmirror.magicmirror.features.admin.AdminUploadsFragment;
 
 public class UploadingFilesDialog extends DialogFragment
 implements AdminUploadsFragment.OnFileUploaded {

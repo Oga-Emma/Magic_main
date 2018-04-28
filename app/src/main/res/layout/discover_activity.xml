@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".FEATURES.feed.DiscoverActivity">
+    tools:context=".features.feed.DiscoverActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/discover_appbar"
@@ -77,7 +77,7 @@
     </android.support.design.widget.AppBarLayout>
 
 
-    <!--app:layout_behavior="ai.magicmirror.magicmirror.ScrollAwareFABBehavior"-->
+    <!--app:layout_behavior="ai.magicmirror.magicmirror.app.ScrollAwareFABBehavior"-->
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -16,16 +16,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".FEATURES.user_auth.login.PhoneNumberLoginActivity"
+            android:name=".features.user_auth.login.PhoneNumberLoginActivity"
             android:launchMode="singleInstance"
             android:theme="@style/AppThemeDark">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".FEATURES.user_auth.SignInActivity" />
+                android:value=".features.user_auth.SignInActivity" />
         </activity>
-        <activity android:name=".FEATURES.profile_setup.ProfileSetupActivity" />
+        <activity android:name=".features.profile_setup.ProfileSetupActivity" />
         <activity
-            android:name=".FEATURES.user_auth.SignInActivity"
+            android:name=".features.user_auth.SignInActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,36 +34,37 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FEATURES.profile_setup.DreaProfileSetupActivity"
+            android:name=".features.profile_setup.DreaProfileSetupActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
-            android:name=".FEATURES.feed.FeedPageActivity"
+            android:name=".features.feed.FeedPageActivity"
             android:label="@string/title_activity_feed_page"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".FEATURES.user_profile.UserProfileActivity"
+            android:name=".features.user_profile.UserProfileActivity"
             android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".FEATURES.feed.FeedPageActivity" />
+                android:value=".features.feed.FeedPageActivity" />
         </activity>
-        <activity android:name=".FEATURES.swap.SwapActivity" />
+        <activity android:name=".features.swap.SwapActivity" />
         <activity
-            android:name=".FEATURES.admin.AdminActivity"
+            android:name=".features.admin.AdminActivity"
             android:label="@string/title_activity_admin" />
-        <activity android:name=".FEATURES.admin.UploadImageActivity" />
+        <activity android:name=".features.admin.UploadImageActivity" />
         <activity
-            android:name=".FEATURES.profile_setup.profileSetup.ProfileSetupActivity"
+            android:name=".features.profile_setup.profileSetup.ProfileSetupActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".FEATURES.admin.UploadingImageActivity" />
+        <activity android:name=".features.admin.UploadingImageActivity" />
         <activity
-            android:name=".FEATURES.feed.ImagePreviewActivity"
+            android:name=".features.feed.ImagePreviewActivity"
             android:theme="@style/NoTitleDialog" />
-        <activity android:name=".FEATURES.feed.DiscoverActivity"
+        <activity
+            android:name=".features.feed.DiscoverActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".FEATURES.feed.FeedPageActivity" />
+                android:value=".features.feed.FeedPageActivity" />
         </activity>
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
         android:theme="@style/Base.Theme.AppCompat"/>

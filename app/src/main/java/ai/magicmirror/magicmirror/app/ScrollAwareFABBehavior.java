@@ -1,4 +1,4 @@
-package ai.magicmirror.magicmirror;
+package ai.magicmirror.magicmirror.app;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
@@ -6,7 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class ScrollAwareFABBehavior extends CoordinatorLayout.Behavior<FloatingActionButton>  {
+public class ScrollAwareFABBehavior extends CoordinatorLayout.Behavior<FloatingActionButton> {
     public ScrollAwareFABBehavior(Context context, AttributeSet attrs) {
         super();
     }
@@ -22,7 +22,7 @@ public class ScrollAwareFABBehavior extends CoordinatorLayout.Behavior<FloatingA
                                final FloatingActionButton child,
                                final View target, final int dxConsumed, final int dyConsumed,
                                final int dxUnconsumed, final int dyUnconsumed) {
-        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed,dxUnconsumed, dyUnconsumed);
+        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
         if (dyConsumed > 0 && child.getVisibility() == View.VISIBLE) {
             child.hide();
         } else if (dyConsumed < 0 && child.getVisibility() != View.VISIBLE) {

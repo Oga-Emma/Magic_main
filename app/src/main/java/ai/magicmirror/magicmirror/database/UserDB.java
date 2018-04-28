@@ -18,9 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import ai.magicmirror.magicmirror.FEATURES.profile_setup.profileSetup.ProfileSetupActivity;
 import ai.magicmirror.magicmirror.R;
-import ai.magicmirror.magicmirror.DTO.UserDTO;
+import ai.magicmirror.magicmirror.dto.UserDTO;
 
 import static ai.magicmirror.magicmirror.utils.FirebaseUtils.Database._USERS_TABLE;
 

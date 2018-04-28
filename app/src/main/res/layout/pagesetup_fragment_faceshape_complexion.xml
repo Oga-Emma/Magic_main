@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@color/colorPrimaryDark"
     android:paddingBottom="32dp"
-    tools:context=".FEATURES.profile_setup.profileSetup.FaceshapeComplexionFragment">
+    tools:context=".features.profile_setup.profileSetup.FaceshapeComplexionFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
